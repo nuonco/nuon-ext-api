@@ -1,0 +1,7 @@
+[extension]
+name = "api"
+description = "API client for the Nuon public API"
+
+[extension.auth]
+requires_token = true
+requires_org = true
