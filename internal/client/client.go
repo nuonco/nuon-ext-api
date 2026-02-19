@@ -4,11 +4,18 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	neturl "net/url"
 	"strings"
 
 	"github.com/nuonco/nuon-ext-api/internal/config"
 	"github.com/nuonco/nuon-ext-api/internal/debug"
 )
+
+// QueryParam represents a key=value query parameter.
+type QueryParam struct {
+	Key   string
+	Value string
+}
 
 // Client makes authenticated HTTP requests to the Nuon API.
 type Client struct {
@@ -36,15 +43,27 @@ type Response struct {
 }
 
 // Do executes an HTTP request against the API.
-func (c *Client) Do(method, path, payload string) (*Response, error) {
-	url := c.baseURL + path
+func (c *Client) Do(method, path, payload string, queryParams ...QueryParam) (*Response, error) {
+	reqURL := c.baseURL + path
+
+	if len(queryParams) > 0 {
+		q := make(neturl.Values)
+		for _, qp := range queryParams {
+			q.Add(qp.Key, qp.Value)
+		}
+		if strings.Contains(reqURL, "?") {
+			reqURL += "&" + q.Encode()
+		} else {
+			reqURL += "?" + q.Encode()
+		}
+	}
 
 	var body io.Reader
 	if payload != "" {
 		body = strings.NewReader(payload)
 	}
 
-	req, err := http.NewRequest(method, url, body)
+	req, err := http.NewRequest(method, reqURL, body)
 	if err != nil {
 		return nil, fmt.Errorf("building request: %w", err)
 	}
@@ -63,7 +82,7 @@ func (c *Client) Do(method, path, payload string) (*Response, error) {
 	}
 	req.Header.Set("Accept", "application/json")
 
-	debug.Log("http: %s %s", method, url)
+	debug.Log("http: %s %s", method, reqURL)
 
 	resp, err := c.http.Do(req)
 	if err != nil {

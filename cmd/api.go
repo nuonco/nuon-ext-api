@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -29,8 +30,9 @@ Override the method with -X:
 
 Examples:
   nuon api /v1/apps
+  nuon api /v1/apps -q limit=5
   nuon api /v1/apps '{"name":"my-app"}'
-  nuon api /v1/apps/{app_id}
+  nuon api /v1/apps/{app_id} --info
   nuon api --list`,
 		Args:               cobra.ArbitraryArgs,
 		DisableFlagParsing: false,
@@ -39,7 +41,9 @@ Examples:
 	}
 
 	cmd.Flags().StringP("method", "X", "", "HTTP method override (GET, POST, PUT, PATCH, DELETE)")
+	cmd.Flags().StringArrayP("query", "q", nil, "Query parameter as key=value (repeatable)")
 	cmd.Flags().Bool("list", false, "Browse available API endpoints interactively")
+	cmd.Flags().Bool("info", false, "Show endpoint details (params, body schema) instead of executing")
 	cmd.Flags().Bool("raw", false, "Output raw JSON without formatting")
 
 	return cmd
@@ -77,10 +81,22 @@ func runAPI(cmd *cobra.Command, args []string) error {
 		return cmd.Help()
 	}
 
+	path := args[0]
+
+	// --info: show endpoint details and exit
+	showInfo, _ := cmd.Flags().GetBool("info")
+	if showInfo {
+		routes := api.Lookup(path)
+		if len(routes) == 0 {
+			return fmt.Errorf("no endpoint found for path: %s", path)
+		}
+		output.PrintEndpointInfo(routes, cfg.APIURL)
+		return nil
+	}
+
 	raw, _ := cmd.Flags().GetBool("raw")
 	methodOverride, _ := cmd.Flags().GetString("method")
 
-	path := args[0]
 	var payload string
 	if len(args) > 1 {
 		payload = args[1]
@@ -93,7 +109,18 @@ func runAPI(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	resp, err := c.Do(req.Method, req.Path, req.Payload)
+	// Parse -q key=value pairs into query params
+	queryFlags, _ := cmd.Flags().GetStringArray("query")
+	var queryParams []client.QueryParam
+	for _, qf := range queryFlags {
+		k, v, ok := strings.Cut(qf, "=")
+		if !ok {
+			return fmt.Errorf("invalid query parameter %q (expected key=value)", qf)
+		}
+		queryParams = append(queryParams, client.QueryParam{Key: k, Value: v})
+	}
+
+	resp, err := c.Do(req.Method, req.Path, req.Payload, queryParams...)
 	if err != nil {
 		return err
 	}
