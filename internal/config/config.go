@@ -1,6 +1,10 @@
 package config
 
-import "os"
+import (
+	"os"
+
+	"github.com/nuonco/nuon-ext-api/internal/debug"
+)
 
 type Config struct {
 	APIURL     string
@@ -27,5 +31,19 @@ func Load() *Config {
 	if cfg.APIURL == "" {
 		cfg.APIURL = "https://api.nuon.co"
 	}
+
+	debug.Log("config: api_url=%s org_id=%s app_id=%s install_id=%s token=%s",
+		cfg.APIURL, cfg.OrgID, cfg.AppID, cfg.InstallID, maskToken(cfg.APIToken))
+
 	return cfg
+}
+
+func maskToken(token string) string {
+	if token == "" {
+		return "(empty)"
+	}
+	if len(token) <= 8 {
+		return "***"
+	}
+	return token[:4] + "..." + token[len(token)-4:]
 }

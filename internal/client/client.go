@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/nuonco/nuon-ext-api/internal/config"
+	"github.com/nuonco/nuon-ext-api/internal/debug"
 )
 
 // Client makes authenticated HTTP requests to the Nuon API.
@@ -62,6 +63,8 @@ func (c *Client) Do(method, path, payload string) (*Response, error) {
 	}
 	req.Header.Set("Accept", "application/json")
 
+	debug.Log("http: %s %s", method, url)
+
 	resp, err := c.http.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("executing request: %w", err)
@@ -72,6 +75,8 @@ func (c *Client) Do(method, path, payload string) (*Response, error) {
 	if err != nil {
 		return nil, fmt.Errorf("reading response: %w", err)
 	}
+
+	debug.Log("http: %d (%d bytes)", resp.StatusCode, len(respBody))
 
 	return &Response{
 		StatusCode: resp.StatusCode,

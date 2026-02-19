@@ -6,6 +6,7 @@ import (
 
 	"github.com/nuonco/nuon-ext-api/internal/client"
 	"github.com/nuonco/nuon-ext-api/internal/config"
+	"github.com/nuonco/nuon-ext-api/internal/debug"
 	"github.com/nuonco/nuon-ext-api/internal/resolve"
 	"github.com/nuonco/nuon-ext-api/internal/spec"
 )
@@ -52,16 +53,20 @@ func Resolve(api *spec.API, inputPath, payload, methodOverride string, cfg *conf
 		return nil, fmt.Errorf("method %s not available for path: %s", method, inputPath)
 	}
 
+	debug.Log("dispatch: %s %s (%s)", method, inputPath, matched.OperationID)
+
 	// Resolve path parameters.
 	// If the input path still contains {param} placeholders, resolve them
 	// via env vars or interactive selection. Otherwise use the input as-is.
 	resolvedPath := inputPath
 	if strings.Contains(inputPath, "{") {
+		debug.Log("dispatch: resolving path params in %s", inputPath)
 		var err error
 		resolvedPath, err = resolve.PathParams(matched.Path, cfg, c)
 		if err != nil {
 			return nil, err
 		}
+		debug.Log("dispatch: resolved to %s", resolvedPath)
 	}
 
 	return &Request{
