@@ -110,13 +110,13 @@ cd nuon-ext-api
 Run (`go run`) locally with values from `~/.nuon`:
 
 ```bash
-./scripts/run-local.sh api /v1/apps
+./scripts/run-local.sh /v1/apps
 ```
 
 The config file can be configured with `NUON_CONFIG_FILE`
 
 ```bash
-NUON_CONFIG_FILE="~/.nuon-org-byoc" ./scripts/run-local.sh api /v1/apps
+NUON_CONFIG_FILE="~/.nuon-org-byoc" ./scripts/run-local.sh /v1/apps
 ```
 
 Build:
