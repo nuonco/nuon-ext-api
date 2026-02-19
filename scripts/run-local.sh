@@ -24,6 +24,5 @@ while IFS=': ' read -r key value; do
   export "$env_name=$value"
 done < "$CONFIG_FILE"
 
-echo "Loaded config from $CONFIG_FILE"
 cd "$ROOT_DIR"
 GOWORK=off go run . "$@"
