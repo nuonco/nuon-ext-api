@@ -30,6 +30,11 @@ func (r Route) DisplayName() string {
 	return r.Method + " " + r.Path
 }
 
+// DocsURL returns the Swagger UI URL for this endpoint.
+func (r Route) DocsURL(baseURL string) string {
+	return strings.TrimRight(baseURL, "/") + "/docs/index.html#/" + r.Tag + "/" + r.OperationID
+}
+
 // MatchesPath checks if a user-provided path matches this route's template.
 // For example, "/v1/apps/abc123" matches "/v1/apps/{app_id}".
 // Returns true and the extracted path parameter values if it matches.

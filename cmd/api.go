@@ -57,14 +57,20 @@ func initAPI(cmd *cobra.Command, args []string) error {
 func runAPI(cmd *cobra.Command, args []string) error {
 	showList, _ := cmd.Flags().GetBool("list")
 	if showList {
-		result, err := browser.Run(api)
+		result, err := browser.Run(api, cfg.APIURL)
 		if err != nil {
 			return err
 		}
-		if result.Selected {
+		switch result.Action {
+		case browser.ActionSelect:
 			fmt.Println(result.Route.DisplayName())
+			return nil
+		case browser.ActionExecute:
+			// Fall through to execute the GET request
+			args = []string{result.Route.Path}
+		default:
+			return nil
 		}
-		return nil
 	}
 
 	if len(args) == 0 {
