@@ -80,12 +80,13 @@ func runAPI(cmd *cobra.Command, args []string) error {
 		payload = args[1]
 	}
 
-	req, err := dispatch.Resolve(api, path, payload, methodOverride)
+	c := client.New(cfg)
+
+	req, err := dispatch.Resolve(api, path, payload, methodOverride, cfg, c)
 	if err != nil {
 		return err
 	}
 
-	c := client.New(cfg)
 	resp, err := c.Do(req.Method, req.Path, req.Payload)
 	if err != nil {
 		return err

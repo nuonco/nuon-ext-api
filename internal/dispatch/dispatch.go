@@ -4,30 +4,29 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/nuonco/nuon-ext-api/internal/client"
+	"github.com/nuonco/nuon-ext-api/internal/config"
+	"github.com/nuonco/nuon-ext-api/internal/resolve"
 	"github.com/nuonco/nuon-ext-api/internal/spec"
 )
 
 // Request represents a resolved API request ready for execution.
 type Request struct {
-	Route      spec.Route
-	Path       string // resolved path with concrete param values
-	Method     string
-	Payload    string            // raw JSON body (empty for GET/DELETE)
-	PathParams map[string]string // extracted path parameter values
+	Route   spec.Route
+	Path    string // resolved path with concrete param values
+	Method  string
+	Payload string // raw JSON body (empty for GET/DELETE)
 }
 
 // Resolve takes user input (path, optional payload, optional method override)
 // and matches it against the spec to produce an executable Request.
-func Resolve(api *spec.API, inputPath, payload, methodOverride string) (*Request, error) {
+// If the path contains {param} placeholders, they are resolved via env vars
+// or interactive selection.
+func Resolve(api *spec.API, inputPath, payload, methodOverride string, cfg *config.Config, c *client.Client) (*Request, error) {
+	// First, look up the route using the raw input (may contain {param} templates)
 	routes := api.Lookup(inputPath)
 	if len(routes) == 0 {
 		return nil, fmt.Errorf("no endpoint found for path: %s", inputPath)
-	}
-
-	// Extract path params from the match
-	var pathParams map[string]string
-	if len(routes) > 0 {
-		_, pathParams = routes[0].MatchesPath(inputPath)
 	}
 
 	method := inferMethod(routes, payload, methodOverride)
@@ -53,19 +52,23 @@ func Resolve(api *spec.API, inputPath, payload, methodOverride string) (*Request
 		return nil, fmt.Errorf("method %s not available for path: %s", method, inputPath)
 	}
 
-	// Resolve the actual path — if user passed a template, keep it for now
-	// (Phase 4 will handle interactive resolution of {param} placeholders)
+	// Resolve path parameters.
+	// If the input path still contains {param} placeholders, resolve them
+	// via env vars or interactive selection. Otherwise use the input as-is.
 	resolvedPath := inputPath
-	if pathParams == nil {
-		pathParams = make(map[string]string)
+	if strings.Contains(inputPath, "{") {
+		var err error
+		resolvedPath, err = resolve.PathParams(matched.Path, cfg, c)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return &Request{
-		Route:      *matched,
-		Path:       resolvedPath,
-		Method:     method,
-		Payload:    payload,
-		PathParams: pathParams,
+		Route:   *matched,
+		Path:    resolvedPath,
+		Method:  method,
+		Payload: payload,
 	}, nil
 }
 
