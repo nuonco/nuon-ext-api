@@ -5,6 +5,9 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/nuonco/nuon-ext-api/internal/client"
+	"github.com/nuonco/nuon-ext-api/internal/dispatch"
+	"github.com/nuonco/nuon-ext-api/internal/output"
 	"github.com/nuonco/nuon-ext-api/internal/pkg/tui/browser"
 	"github.com/nuonco/nuon-ext-api/internal/spec"
 )
@@ -68,17 +71,25 @@ func runAPI(cmd *cobra.Command, args []string) error {
 		return cmd.Help()
 	}
 
-	// TODO: Phase 3+ — dispatch, HTTP client
+	raw, _ := cmd.Flags().GetBool("raw")
+	methodOverride, _ := cmd.Flags().GetString("method")
+
 	path := args[0]
-	routes := api.Lookup(path)
-	if len(routes) == 0 {
-		return fmt.Errorf("no endpoint found for path: %s", path)
+	var payload string
+	if len(args) > 1 {
+		payload = args[1]
 	}
 
-	fmt.Printf("matched %d route(s) for %s:\n", len(routes), path)
-	for _, r := range routes {
-		fmt.Printf("  %s %s (%s) — %s\n", r.Method, r.Path, r.OperationID, r.Summary)
+	req, err := dispatch.Resolve(api, path, payload, methodOverride)
+	if err != nil {
+		return err
 	}
 
-	return nil
+	c := client.New(cfg)
+	resp, err := c.Do(req.Method, req.Path, req.Payload)
+	if err != nil {
+		return err
+	}
+
+	return output.Print(resp, raw)
 }
