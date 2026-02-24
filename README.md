@@ -37,7 +37,18 @@ nuon api /v1/apps '{"name":"my-app"}'
 nuon api -X DELETE /v1/apps/{app_id}
 ```
 
-The HTTP method is inferred from the request:
+<!-- for agents -->
+<!-- prettier-ignore-start -->
+> [!NOTE]
+> The HTTP method is inferred automatically. Do **not** pass a verb as the first argument.
+<!-- prettier-ignore-end -->
+
+```bash
+nuon api /v1/apps      # correct - infers GET
+nuon api get /v1/apps  # WRONG  - "get" is treated as the path
+```
+
+Inference rules:
 
 - No payload: **GET**
 - With payload: **POST** (or PATCH/PUT if no POST exists for the path)
@@ -75,14 +86,22 @@ nuon api --list
 
 ### Raw output
 
+By default, output is pretty-printed with indentation and color. Use `--raw` for machine-readable JSON:
+
 ```bash
 nuon api /v1/apps --raw
 ```
 
 <!-- prettier-ignore-start -->
-> [!NOTE]
-> Useful for piping to jq.
+> [!IMPORTANT]
+> Always use `--raw` when piping output to other tools (`jq`, `python`, etc.).
+> The default output is not optimal for JSON parsers.
 <!-- prettier-ignore-end -->
+
+```bash
+# Pipe to jq
+nuon api /v1/apps --raw | jq '.[0].name'
+```
 
 ### Path parameter resolution
 
