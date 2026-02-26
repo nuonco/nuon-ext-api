@@ -8,7 +8,7 @@
             "name": "Nuon Support",
             "email": "support@nuon.co"
         },
-        "version": "0.19.800"
+        "version": "0.19.807"
     },
     "host": "api.nuon.co",
     "basePath": "/",
@@ -6363,6 +6363,167 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/app.AppSecretsConfig"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/apps/{app_id}/operation-role-configs": {
+            "post": {
+                "security": [
+                    {
+                        "APIKey": []
+                    },
+                    {
+                        "OrgID": []
+                    }
+                ],
+                "description": "Create operation role rules for an app config",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "apps"
+                ],
+                "summary": "create operation role config",
+                "operationId": "CreateAppOperationRoleConfig",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "app ID",
+                        "name": "app_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Input",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.CreateAppOperationRoleConfigRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppOperationRoleConfig"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/apps/{app_id}/operation-role-configs/{operation_role_config_id}": {
+            "get": {
+                "security": [
+                    {
+                        "APIKey": []
+                    },
+                    {
+                        "OrgID": []
+                    }
+                ],
+                "description": "Get all operation role configs for an app",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "apps"
+                ],
+                "summary": "get operation role configs",
+                "operationId": "GetAppOperationRoleConfigs",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "app ID",
+                        "name": "app_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "operation role config ID",
+                        "name": "operation_role_config_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/app.AppOperationRoleConfig"
+                            }
                         }
                     },
                     "400": {
@@ -12985,6 +13146,96 @@
                 }
             }
         },
+        "/v1/installs/{install_id}/available-roles": {
+            "get": {
+                "security": [
+                    {
+                        "APIKey": []
+                    },
+                    {
+                        "OrgID": []
+                    }
+                ],
+                "description": "Returns a list of available IAM roles that can be used for a specific operation on an install.\n\nThe endpoint filters roles based on the operation type:\n- **provision/reprovision**: Custom roles, break glass roles, provision IAM role\n- **deprovision/teardown**: Custom roles, break glass roles, deprovision IAM role\n- **deploy**: Custom roles, break glass roles, maintenance IAM role\n- **trigger** (actions): Custom roles, break glass roles, provision + maintenance IAM roles\n\nRoles are sourced from the install's stack outputs.\n",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "installs"
+                ],
+                "summary": "get available IAM roles for a specific operation",
+                "operationId": "GetAvailableRoles",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "install ID",
+                        "name": "install_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "component",
+                            "sandbox",
+                            "action"
+                        ],
+                        "type": "string",
+                        "description": "principal type: component, sandbox, action",
+                        "name": "principal_type",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "operation type: provision, reprovision, deprovision, deploy, teardown, trigger",
+                        "name": "app.operationType",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/service.AvailableRolesResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/installs/{install_id}/components": {
             "get": {
                 "security": [
@@ -18143,7 +18394,8 @@
                     "application/json"
                 ],
                 "tags": [
-                    "runners"
+                    "runners",
+                    "runners/runner"
                 ],
                 "summary": "get runner job composite plan",
                 "operationId": "GetRunnerJobCompositePlan",
@@ -22494,6 +22746,7 @@
                 "runner_deprovision",
                 "runner_maintenance",
                 "breakglass",
+                "custom",
                 "runner_breakglass"
             ],
             "x-enum-varnames": [
@@ -22501,6 +22754,7 @@
                 "AWSIAMRoleTypeRunnerDeprovision",
                 "AWSIAMRoleTypeRunnerMaintenance",
                 "AWSIAMRoleTypeBreakGlass",
+                "AWSIAMRoleTypeCustom",
                 "AWSIAMRoleTypeRunnerBreakGlass"
             ]
         },
@@ -22511,6 +22765,12 @@
                     "type": "string"
                 },
                 "break_glass_role_arns": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "custom_role_arns": {
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
@@ -22700,6 +22960,9 @@
                     "items": {
                         "$ref": "#/definitions/refs.Ref"
                     }
+                },
+                "role": {
+                    "type": "string"
                 },
                 "steps": {
                     "type": "array",
@@ -23243,6 +23506,9 @@
                 "input": {
                     "$ref": "#/definitions/app.AppInputConfig"
                 },
+                "operation_role_config": {
+                    "$ref": "#/definitions/app.AppOperationRoleConfig"
+                },
                 "org_id": {
                     "type": "string"
                 },
@@ -23478,6 +23744,76 @@
                 "AppInputSourceCustomer"
             ]
         },
+        "app.AppOperationRoleConfig": {
+            "type": "object",
+            "properties": {
+                "app_config_id": {
+                    "type": "string"
+                },
+                "app_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "org_id": {
+                    "type": "string"
+                },
+                "rules": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/app.AppOperationRoleRule"
+                    }
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "app.AppOperationRoleRule": {
+            "type": "object",
+            "properties": {
+                "app_operation_role_config_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "operation": {
+                    "type": "string"
+                },
+                "org": {
+                    "$ref": "#/definitions/app.Org"
+                },
+                "org_id": {
+                    "type": "string"
+                },
+                "principal_name": {
+                    "type": "string"
+                },
+                "principal_type": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "app.AppPermissionsConfig": {
             "type": "object",
             "properties": {
@@ -23501,6 +23837,12 @@
                 },
                 "created_by_id": {
                     "type": "string"
+                },
+                "custom_aws_iam_roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/app.AppAWSIAMRoleConfig"
+                    }
                 },
                 "deprovision_aws_iam_role": {
                     "$ref": "#/definitions/app.AppAWSIAMRoleConfig"
@@ -23727,6 +24069,13 @@
                 },
                 "id": {
                     "type": "string"
+                },
+                "operation_roles": {
+                    "description": "Operation roles map: operation type -\u003e role name",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
                 },
                 "org_id": {
                     "type": "string"
@@ -24256,6 +24605,13 @@
                 },
                 "kubernetes_manifest": {
                     "$ref": "#/definitions/app.KubernetesManifestComponentConfig"
+                },
+                "operation_roles": {
+                    "description": "Operation roles map: operation type -\u003e role name",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
                 },
                 "references": {
                     "type": "array",
@@ -24982,6 +25338,10 @@
                     "type": "object",
                     "additionalProperties": true
                 },
+                "role": {
+                    "description": "Role to be used when running this action",
+                    "type": "string"
+                },
                 "run_env_vars": {
                     "type": "object",
                     "additionalProperties": {
@@ -25276,6 +25636,10 @@
                 "release_id": {
                     "type": "string"
                 },
+                "role": {
+                    "description": "Role to be used when running this component",
+                    "type": "string"
+                },
                 "runner_jobs": {
                     "description": "runner details",
                     "type": "array",
@@ -25476,6 +25840,10 @@
                     "items": {
                         "$ref": "#/definitions/app.PolicyReport"
                     }
+                },
+                "role": {
+                    "description": "Role to be used when planning and applying sandbox runs",
+                    "type": "string"
                 },
                 "run_type": {
                     "$ref": "#/definitions/app.SandboxRunType"
@@ -26014,6 +26382,25 @@
                 "OperationStatusFinished",
                 "OperationStatusNoop",
                 "OperationStatusFailed"
+            ]
+        },
+        "app.OperationType": {
+            "type": "string",
+            "enum": [
+                "provision",
+                "deprovision",
+                "deploy",
+                "teardown",
+                "reprovision",
+                "trigger"
+            ],
+            "x-enum-varnames": [
+                "OperationProvision",
+                "OperationDeprovision",
+                "OperationDeploy",
+                "OperationTeardown",
+                "OperationReprovision",
+                "OperationTrigger"
             ]
         },
         "app.Org": {
@@ -26856,6 +27243,9 @@
                 "id": {
                     "type": "string"
                 },
+                "json": {
+                    "$ref": "#/definitions/app.RunnerJobPlan"
+                },
                 "log_stream_id": {
                     "type": "string"
                 },
@@ -27108,6 +27498,35 @@
                 "RunnerJobOperationTypeApplyPlan",
                 "RunnerJobOperationTypeUnknown"
             ]
+        },
+        "app.RunnerJobPlan": {
+            "type": "object",
+            "properties": {
+                "composite_plan": {
+                    "$ref": "#/definitions/plantypes.CompositePlan"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "org_id": {
+                    "type": "string"
+                },
+                "plan_json": {
+                    "type": "string"
+                },
+                "runner_job_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
         },
         "app.RunnerJobStatus": {
             "type": "string",
@@ -27854,6 +28273,9 @@
                 },
                 "plan_only": {
                     "type": "boolean"
+                },
+                "role": {
+                    "type": "string"
                 },
                 "started_at": {
                     "type": "string"
@@ -28952,6 +29374,14 @@
                 "fetch_image_metadata_plan": {
                     "$ref": "#/definitions/plantypes.FetchImageMetadataPlan"
                 },
+                "plan_auth": {
+                    "description": "Auth for cloud providers",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/plantypes.PlanAuth"
+                        }
+                    ]
+                },
                 "sandbox_run_plan": {
                     "$ref": "#/definitions/plantypes.SandboxRunPlan"
                 },
@@ -29324,6 +29754,17 @@
                 "url": {
                     "description": "URL is the full artifact URL (e.g., registry.nuon.co/org_id/app_id)",
                     "type": "string"
+                }
+            }
+        },
+        "plantypes.PlanAuth": {
+            "type": "object",
+            "properties": {
+                "aws_auth": {
+                    "$ref": "#/definitions/github_com_nuonco_nuon_pkg_aws_credentials.Config"
+                },
+                "azure_auth": {
+                    "$ref": "#/definitions/github_com_nuonco_nuon_pkg_azure_credentials.Config"
                 }
             }
         },
@@ -29925,6 +30366,31 @@
                 }
             }
         },
+        "service.AvailableRole": {
+            "type": "object",
+            "properties": {
+                "arn": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "role_type": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.AvailableRolesResponse": {
+            "type": "object",
+            "properties": {
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/service.AvailableRole"
+                    }
+                }
+            }
+        },
         "service.BuildAllComponentsRequest": {
             "type": "object"
         },
@@ -30054,6 +30520,9 @@
                         "type": "string"
                     }
                 },
+                "role": {
+                    "type": "string"
+                },
                 "steps": {
                     "type": "array",
                     "items": {
@@ -30144,6 +30613,9 @@
                 "name": {
                     "type": "string",
                     "maxLength": 255
+                },
+                "role": {
+                    "type": "string"
                 },
                 "timeout": {
                     "type": "integer",
@@ -30264,6 +30736,24 @@
                 }
             }
         },
+        "service.CreateAppOperationRoleConfigRequest": {
+            "type": "object",
+            "required": [
+                "app_config_id",
+                "rules"
+            ],
+            "properties": {
+                "app_config_id": {
+                    "type": "string"
+                },
+                "rules": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/service.OperationRoleRuleRequest"
+                    }
+                }
+            }
+        },
         "service.CreateAppPermissionsConfigRequest": {
             "type": "object",
             "required": [
@@ -30277,6 +30767,12 @@
                     "type": "string"
                 },
                 "break_glass_roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/service.AppAWSIAMRoleConfig"
+                    }
+                },
+                "custom_roles": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/service.AppAWSIAMRoleConfig"
@@ -30374,6 +30870,12 @@
                     "type": "string"
                 },
                 "env_vars": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "operation_roles": {
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
@@ -30601,6 +31103,12 @@
                         "type": "string"
                     }
                 },
+                "operation_roles": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
                 "public_git_vcs_config": {
                     "$ref": "#/definitions/service.PublicGitVCSConfigRequest"
                 },
@@ -30647,6 +31155,12 @@
                 },
                 "image_url": {
                     "type": "string"
+                },
+                "operation_roles": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
                 },
                 "references": {
                     "type": "array",
@@ -30703,6 +31217,12 @@
                 "namespace": {
                     "type": "string"
                 },
+                "operation_roles": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
                 "public_git_vcs_config": {
                     "$ref": "#/definitions/service.PublicGitVCSConfigRequest"
                 },
@@ -30734,8 +31254,14 @@
         },
         "service.CreateInstallActionWorkflowRunRequest": {
             "type": "object",
+            "required": [
+                "action_workflow_config_id"
+            ],
             "properties": {
                 "action_workflow_config_id": {
+                    "type": "string"
+                },
+                "role": {
                     "type": "string"
                 },
                 "run_env_vars": {
@@ -30757,6 +31283,9 @@
                 },
                 "plan_only": {
                     "type": "boolean"
+                },
+                "role": {
+                    "type": "string"
                 }
             }
         },
@@ -30779,6 +31308,9 @@
                 },
                 "plan_only": {
                     "type": "boolean"
+                },
+                "role": {
+                    "type": "string"
                 }
             }
         },
@@ -30920,6 +31452,12 @@
                 "image_url": {
                     "type": "string"
                 },
+                "operation_roles": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
                 "references": {
                     "type": "array",
                     "items": {
@@ -30974,6 +31512,12 @@
                 },
                 "namespace": {
                     "type": "string"
+                },
+                "operation_roles": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
                 },
                 "public_git_vcs_config": {
                     "$ref": "#/definitions/service.PublicGitVCSConfigRequest"
@@ -31054,6 +31598,12 @@
                     "type": "string"
                 },
                 "env_vars": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "operation_roles": {
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
@@ -31167,6 +31717,9 @@
             "properties": {
                 "plan_only": {
                     "type": "boolean"
+                },
+                "role": {
+                    "type": "string"
                 }
             }
         },
@@ -31183,6 +31736,9 @@
             "properties": {
                 "plan_only": {
                     "type": "boolean"
+                },
+                "role": {
+                    "type": "string"
                 }
             }
         },
@@ -31257,6 +31813,25 @@
         },
         "service.MngVMShutDownRequest": {
             "type": "object"
+        },
+        "service.OperationRoleRuleRequest": {
+            "type": "object",
+            "required": [
+                "operation",
+                "principal",
+                "role"
+            ],
+            "properties": {
+                "operation": {
+                    "$ref": "#/definitions/app.OperationType"
+                },
+                "principal": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
         },
         "service.PatchInstallConfigParams": {
             "type": "object",
@@ -31369,6 +31944,9 @@
             "properties": {
                 "plan_only": {
                     "type": "boolean"
+                },
+                "role": {
+                    "type": "string"
                 }
             }
         },
@@ -31461,6 +32039,9 @@
             "properties": {
                 "plan_only": {
                     "type": "boolean"
+                },
+                "role": {
+                    "type": "string"
                 }
             }
         },
@@ -31469,6 +32050,9 @@
             "properties": {
                 "plan_only": {
                     "type": "boolean"
+                },
+                "role": {
+                    "type": "string"
                 }
             }
         },
