@@ -8,7 +8,7 @@
             "name": "Nuon Support",
             "email": "support@nuon.co"
         },
-        "version": "0.19.807"
+        "version": "0.19.810"
     },
     "host": "api.nuon.co",
     "basePath": "/",
