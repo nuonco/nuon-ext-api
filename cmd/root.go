@@ -23,10 +23,19 @@ var (
 func Execute() {
 	cfg = config.Load()
 
+	apiVersion := "unknown"
+	parsedAPI, err := spec.Parse()
+	if err == nil {
+		api = parsedAPI
+		apiVersion = parsedAPI.Version
+	}
+
 	root := &cobra.Command{
 		Use:   "nuon-ext-api <path> [payload]",
 		Short: "API client for the Nuon public API",
-		Long: `Make API requests to the Nuon public API.
+		Long: fmt.Sprintf(`Make API requests to the Nuon public API.
+
+API version: %s
 
 The HTTP method is inferred from the request:
   - No payload: GET
@@ -40,7 +49,7 @@ Examples:
   nuon api /v1/apps -q limit=5
   nuon api /v1/apps '{"name":"my-app"}'
   nuon api /v1/apps/{app_id} --info
-  nuon api --list`,
+  nuon api --list`, apiVersion),
 		Args:              cobra.ArbitraryArgs,
 		PersistentPreRunE: initAPI,
 		RunE:              runAPI,
@@ -60,6 +69,10 @@ Examples:
 }
 
 func initAPI(cmd *cobra.Command, args []string) error {
+	if api != nil {
+		return nil
+	}
+
 	var err error
 	api, err = spec.Parse()
 	if err != nil {
