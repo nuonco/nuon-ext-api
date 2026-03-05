@@ -143,3 +143,19 @@ Build:
 ```bash
 ./scripts/build.sh
 ```
+
+## Known Issues
+
+If a tag is create but the release fails, the tag must be deleted and re-created manually. For exapmple, to fix tag
+`v0.19.821`:
+
+```bash
+git fetch origin --tags
+git tag -d v0.19.821 || true
+git push origin :refs/tags/v0.19.821
+
+git checkout main
+git pull --ff-only
+git tag -a v0.19.821 -m "Release v0.19.821" "$(git rev-parse origin/main)"
+git push origin refs/tags/v0.19.821
+```
