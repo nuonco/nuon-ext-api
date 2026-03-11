@@ -4,6 +4,8 @@ builds:
   - id: nuon-ext-api
     main: .
     binary: nuon-ext-api
+    ldflags:
+      - -s -w -X github.com/nuonco/nuon-ext-api/cmd.BuildVersion={{ .Version }}
     env:
       - CGO_ENABLED=0
     goos:
