@@ -18,6 +18,9 @@ import (
 var (
 	cfg *config.Config
 	api *spec.API
+
+	// BuildVersion is injected at build time (for releases) via ldflags.
+	BuildVersion = "dev"
 )
 
 func Execute() {
@@ -35,6 +38,8 @@ func Execute() {
 		Short: "API client for the Nuon public API",
 		Long: fmt.Sprintf(`Make API requests to the Nuon public API.
 
+Extension version: %s
+
 API version: %s
 
 The HTTP method is inferred from the request:
@@ -49,11 +54,12 @@ Examples:
   nuon api /v1/apps -q limit=5
   nuon api /v1/apps '{"name":"my-app"}'
   nuon api /v1/apps/{app_id} --info
-  nuon api --list`, apiVersion),
+  nuon api --list`, BuildVersion, apiVersion),
 		Args:              cobra.ArbitraryArgs,
 		PersistentPreRunE: initAPI,
 		RunE:              runAPI,
 	}
+	root.Version = BuildVersion
 
 	root.Flags().StringP("method", "X", "", "HTTP method override (GET, POST, PUT, PATCH, DELETE)")
 	root.Flags().StringArrayP("query", "q", nil, "Query parameter as key=value (repeatable)")
