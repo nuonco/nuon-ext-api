@@ -80,6 +80,7 @@ nuon api --list
 | Key       | Action                                |
 | --------- | ------------------------------------- |
 | **enter** | Select endpoint - print to screen     |
+| **c**     | Copy endpoint path for CLI reuse      |
 | **x**     | Execute endpoint (only GET supported) |
 | **B**     | Open Swagger docs in browser          |
 | **/**     | Filter/Fuzzy-Search                   |

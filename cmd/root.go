@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/atotto/clipboard"
 	"github.com/spf13/cobra"
 
 	"github.com/nuonco/nuon-ext-api/internal/client"
@@ -96,9 +97,23 @@ func runAPI(cmd *cobra.Command, args []string) error {
 		}
 		switch result.Action {
 		case browser.ActionSelect:
-			fmt.Println(result.Route.DisplayName())
+			if result.Route != nil {
+				fmt.Println(result.Route.DisplayName())
+			}
+			return nil
+		case browser.ActionCopy:
+			if result.Route == nil {
+				return nil
+			}
+			if err := clipboard.WriteAll(result.Route.Path); err != nil {
+				fmt.Fprintf(os.Stderr, "warning: failed to copy path to clipboard: %v\n", err)
+			}
+			fmt.Println(result.Route.Path)
 			return nil
 		case browser.ActionExecute:
+			if result.Route == nil {
+				return nil
+			}
 			// Fall through to execute the GET request
 			args = []string{result.Route.Path}
 		default:

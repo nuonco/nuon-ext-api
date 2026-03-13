@@ -21,6 +21,7 @@ const (
 	ActionNone    Action = iota // user quit without selecting
 	ActionSelect                // user pressed enter — print the route
 	ActionExecute               // user pressed x — execute the GET endpoint
+	ActionCopy                  // user pressed c — copy the route path
 )
 
 // Result is returned after the browser exits.
@@ -58,6 +59,10 @@ func Run(api *spec.API, apiURL string) (*Result, error) {
 			key.WithKeys("B"),
 			key.WithHelp("B", "open docs"),
 		),
+		Copy: key.NewBinding(
+			key.WithKeys("c"),
+			key.WithHelp("c", "copy path"),
+		),
 		Execute: key.NewBinding(
 			key.WithKeys("x"),
 			key.WithHelp("x", "execute GET"),
@@ -69,10 +74,10 @@ func Run(api *spec.API, apiURL string) (*Result, error) {
 	}
 
 	l.AdditionalShortHelpKeys = func() []key.Binding {
-		return []key.Binding{keys.Select, keys.Open, keys.Execute}
+		return []key.Binding{keys.Select, keys.Copy, keys.Open, keys.Execute}
 	}
 	l.AdditionalFullHelpKeys = func() []key.Binding {
-		return []key.Binding{keys.Select, keys.Open, keys.Execute}
+		return []key.Binding{keys.Select, keys.Copy, keys.Open, keys.Execute}
 	}
 
 	m := model{list: l, keys: keys, apiURL: apiURL}
@@ -91,6 +96,7 @@ func Run(api *spec.API, apiURL string) (*Result, error) {
 
 type keyMap struct {
 	Open    key.Binding
+	Copy    key.Binding
 	Execute key.Binding
 	Select  key.Binding
 }
@@ -129,6 +135,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.result = &Result{Route: &r, Action: ActionExecute}
 					return m, tea.Quit
 				}
+			}
+			return m, nil
+		case key.Matches(msg, m.keys.Copy):
+			if item, ok := m.list.SelectedItem().(routeItem); ok {
+				r := item.route
+				m.result = &Result{Route: &r, Action: ActionCopy}
+				return m, tea.Quit
 			}
 			return m, nil
 		case msg.String() == "enter":
