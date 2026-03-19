@@ -43,6 +43,16 @@ Extension version: %s
 
 API version: %s
 
+Prerequisites:
+  - The command is normally run as "nuon api" (this binary is the backing extension).
+  - Auth token and org context are required. If requests fail with 401/403, run:
+      nuon auth login
+
+Path placeholders ({...}):
+  - If a placeholder remains in the path (for example {workflow_id}), this extension tries to resolve it.
+  - Resolution order: config/env -> interactive selector.
+  - In non-interactive environments, pass concrete IDs to avoid selector prompts/failures.
+
 The HTTP method is inferred from the request:
   - No payload: GET
   - With payload: POST (or PATCH/PUT if no POST exists for the path)
@@ -55,7 +65,25 @@ Examples:
   nuon api /v1/apps -q limit=5
   nuon api /v1/apps '{"name":"my-app"}'
   nuon api /v1/apps/{app_id} --info
-  nuon api --list`, BuildVersion, apiVersion),
+  nuon api --list
+
+Agent-oriented examples:
+  # Workflow step details
+  nuon api /v1/workflows/wfl_123/steps/stp_456
+
+  # Component outputs
+  nuon api /v1/installs/ins_123/components/cmp_456/outputs
+
+  # Discovery flow: install -> workflows -> steps -> step
+  nuon api /v1/installs/ins_123/workflows -q planonly=false
+  nuon api /v1/workflows/wfl_123/steps
+  nuon api /v1/workflows/wfl_123/steps/stp_456
+
+Interactive endpoint browser:
+  nuon api --list
+
+  Note: --list requires an interactive TTY. In CI/non-interactive shells, use --info instead:
+    nuon api /v1/workflows/{workflow_id}/steps/{step_id} --info`, BuildVersion, apiVersion),
 		Args:              cobra.ArbitraryArgs,
 		PersistentPreRunE: initAPI,
 		RunE:              runAPI,
@@ -64,7 +92,7 @@ Examples:
 
 	root.Flags().StringP("method", "X", "", "HTTP method override (GET, POST, PUT, PATCH, DELETE)")
 	root.Flags().StringArrayP("query", "q", nil, "Query parameter as key=value (repeatable)")
-	root.Flags().Bool("list", false, "Browse available API endpoints interactively")
+	root.Flags().Bool("list", false, "Browse available API endpoints interactively (requires a TTY)")
 	root.Flags().Bool("info", false, "Show endpoint details (params, body schema) instead of executing")
 	root.Flags().Bool("raw", false, "Output raw JSON without formatting")
 

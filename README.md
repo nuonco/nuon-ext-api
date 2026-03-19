@@ -57,8 +57,8 @@ Inference rules:
 ### Query parameters
 
 ```bash
-nuon api /v1/intalls -q limit=5
-nuon api /v1/intalls -q limit=5 -q offset=10
+nuon api /v1/installs -q limit=5
+nuon api /v1/installs -q limit=5 -q offset=10
 ```
 
 ### Endpoint info
@@ -76,6 +76,8 @@ Browse all available endpoints interactively:
 ```bash
 nuon api --list
 ```
+
+`--list` requires an interactive TTY. In CI or non-interactive shells, prefer `--info` plus explicit requests.
 
 | Key       | Action                                |
 | --------- | ------------------------------------- |
@@ -111,6 +113,29 @@ Path parameters like `{app_id}` are resolved in order:
 1. Literal value if the path contains no `{...}` placeholders
 2. Environment variable (`NUON_APP_ID`, `NUON_INSTALL_ID`, `NUON_ORG_ID`)
 3. Interactive selector that fetches available resources from the API
+
+### Non-Interactive / CI Usage
+
+For scripts and agents, avoid interactive resolution and pass concrete IDs whenever possible.
+
+```bash
+# Good for CI/agents: explicit IDs
+nuon api /v1/workflows/wfl_123/steps/stp_456 --raw
+nuon api /v1/installs/ins_123/components/cmp_456/outputs --raw
+
+# Use --info to inspect required params without executing
+nuon api /v1/workflows/{workflow_id}/steps/{step_id} --info
+
+# Example discovery flow with explicit install ID
+nuon api /v1/installs/ins_123/workflows -q planonly=false --raw
+nuon api /v1/workflows/wfl_123/steps --raw
+```
+
+Recommended for machine consumption:
+
+- Use `--raw` when piping to `jq` or other tools.
+- Do not rely on `--list` in CI/non-TTY environments.
+- If you use placeholders like `{workflow_id}`, the extension may try to open an interactive selector.
 
 ### Debug logging
 
