@@ -40,6 +40,7 @@ func Parse() (*API, error) {
 				Method:      method,
 				OperationID: op.OperationID,
 				Summary:     op.Summary,
+				Deprecated:  op.Deprecated,
 			}
 			if len(op.Tags) > 0 {
 				route.Tag = op.Tags[0]
@@ -73,6 +74,9 @@ func Parse() (*API, error) {
 	}
 
 	sort.Slice(api.Routes, func(i, j int) bool {
+		if api.Routes[i].Deprecated != api.Routes[j].Deprecated {
+			return !api.Routes[i].Deprecated
+		}
 		if api.Routes[i].Path != api.Routes[j].Path {
 			return api.Routes[i].Path < api.Routes[j].Path
 		}
@@ -126,8 +130,8 @@ func (a *API) LookupByMethod(inputPath, method string) *Route {
 // swagger 2.0 JSON structures — only the fields we need
 
 type swaggerDoc struct {
-	Info  swaggerInfo                          `json:"info"`
-	Paths map[string]map[string]swaggerOp      `json:"paths"`
+	Info  swaggerInfo                     `json:"info"`
+	Paths map[string]map[string]swaggerOp `json:"paths"`
 }
 
 type swaggerInfo struct {
@@ -135,10 +139,11 @@ type swaggerInfo struct {
 }
 
 type swaggerOp struct {
-	OperationID string           `json:"operationId"`
-	Summary     string           `json:"summary"`
-	Tags        []string         `json:"tags"`
-	Parameters  []swaggerParam   `json:"parameters"`
+	OperationID string         `json:"operationId"`
+	Summary     string         `json:"summary"`
+	Deprecated  bool           `json:"deprecated"`
+	Tags        []string       `json:"tags"`
+	Parameters  []swaggerParam `json:"parameters"`
 }
 
 type swaggerParam struct {

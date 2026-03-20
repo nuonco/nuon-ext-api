@@ -8,6 +8,7 @@ type Route struct {
 	Method      string  // e.g., "GET"
 	OperationID string  // e.g., "GetApp"
 	Summary     string  // Human-readable description
+	Deprecated  bool    // Whether the endpoint is marked as deprecated in the OpenAPI spec
 	Tag         string  // Primary tag (e.g., "apps")
 	PathParams  []Param // Parameters in the path
 	QueryParams []Param // Query string parameters

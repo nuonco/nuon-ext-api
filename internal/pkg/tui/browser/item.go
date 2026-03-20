@@ -2,6 +2,7 @@ package browser
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/nuonco/nuon-ext-api/internal/spec"
 )
@@ -16,10 +17,16 @@ func (i routeItem) Title() string {
 }
 
 func (i routeItem) Description() string {
+	desc := i.route.OperationID
 	if i.route.Summary != "" {
-		return i.route.Summary
+		desc = i.route.Summary
 	}
-	return i.route.OperationID
+
+	if i.route.Deprecated {
+		return "[deprecated] " + strings.TrimSpace(desc)
+	}
+
+	return desc
 }
 
 func (i routeItem) FilterValue() string {
