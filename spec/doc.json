@@ -8,7 +8,7 @@
             "name": "Nuon Support",
             "email": "support@nuon.co"
         },
-        "version": "0.19.807"
+        "version": "0.19.821"
     },
     "host": "api.nuon.co",
     "basePath": "/",
@@ -3172,7 +3172,6 @@
                 ],
                 "summary": "delete a component",
                 "operationId": "DeleteAppComponent",
-                "deprecated": true,
                 "parameters": [
                     {
                         "type": "string",
@@ -3249,7 +3248,6 @@
                 ],
                 "summary": "update a component",
                 "operationId": "UpdateAppComponent",
-                "deprecated": true,
                 "parameters": [
                     {
                         "type": "string",
