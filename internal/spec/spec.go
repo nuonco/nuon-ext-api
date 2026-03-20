@@ -86,6 +86,24 @@ func Parse() (*API, error) {
 	return api, nil
 }
 
+// ListRoutes returns routes suitable for interactive browsing.
+// Deprecated endpoints are hidden unless includeDeprecated is true.
+func (a *API) ListRoutes(includeDeprecated bool) []Route {
+	if includeDeprecated {
+		return a.Routes
+	}
+
+	routes := make([]Route, 0, len(a.Routes))
+	for _, route := range a.Routes {
+		if route.Deprecated {
+			continue
+		}
+		routes = append(routes, route)
+	}
+
+	return routes
+}
+
 // Lookup finds all routes matching a given path (with or without concrete param values).
 // It first tries an exact template match, then tries matching against route patterns.
 func (a *API) Lookup(inputPath string) []Route {

@@ -93,6 +93,7 @@ Interactive endpoint browser:
 	root.Flags().StringP("method", "X", "", "HTTP method override (GET, POST, PUT, PATCH, DELETE)")
 	root.Flags().StringArrayP("query", "q", nil, "Query parameter as key=value (repeatable)")
 	root.Flags().Bool("list", false, "Browse available API endpoints interactively (requires a TTY)")
+	root.Flags().Bool("show-deprecated", false, "Include deprecated endpoints in --list output")
 	root.Flags().Bool("info", false, "Show endpoint details (params, body schema) instead of executing")
 	root.Flags().Bool("raw", false, "Output raw JSON without formatting")
 
@@ -119,7 +120,11 @@ func initAPI(cmd *cobra.Command, args []string) error {
 func runAPI(cmd *cobra.Command, args []string) error {
 	showList, _ := cmd.Flags().GetBool("list")
 	if showList {
-		result, err := browser.Run(api, cfg.APIURL)
+		showDeprecated, _ := cmd.Flags().GetBool("show-deprecated")
+		listAPI := *api
+		listAPI.Routes = api.ListRoutes(showDeprecated)
+
+		result, err := browser.Run(&listAPI, cfg.APIURL)
 		if err != nil {
 			return err
 		}
