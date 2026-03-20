@@ -1,4 +1,16 @@
-# Nuon Extension: api
+<h1 align="center">Nuon Extension: api</h1>
+
+<p align="center">
+  <a href="https://github.com/nuonco/nuon-ext-api/releases"><img src="https://img.shields.io/github/v/release/nuonco/nuon-ext-api?display_name=tag&amp;sort=semver" alt="Release"></a>
+  <a href="https://go.dev/doc/devel/release"><img src="https://img.shields.io/badge/Go-1.25.0-00ADD8?logo=go&amp;logoColor=white" alt="Go Version"></a>
+  <a href="https://pkg.go.dev/github.com/nuonco/nuon-ext-api"><img src="https://img.shields.io/badge/module-github.com%2Fnuonco%2Fnuon--ext--api-2C6BED" alt="Go Module"></a>
+</p>
+
+<p align="center">
+  <a href="https://docs.nuon.co/guides">Nuon Docs</a>
+  |
+  <a href="https://docs.nuon.co/guides/cli-extensions">Nuon Extension Docs</a>
+</p>
 
 A spec-driven API client for the Nuon public API.
 
@@ -40,7 +52,7 @@ nuon api -X DELETE /v1/apps/{app_id}
 <!-- for agents -->
 <!-- prettier-ignore-start -->
 > [!NOTE]
-> The HTTP method is inferred automatically. Do **not** pass a verb as the first argument.
+> The HTTP method is inferred automatically. You can override with `-X` or `--method`.
 <!-- prettier-ignore-end -->
 
 ```bash
@@ -52,7 +64,7 @@ Inference rules:
 
 - No payload: **GET**
 - With payload: **POST** (or PATCH/PUT if no POST exists for the path)
-- Override with `-X`: `nuon api -X DELETE /v1/apps/{app_id}`
+- Override with `-X`/`--method`: `nuon api -X DELETE /v1/apps/{app_id}`
 
 ### Query parameters
 
@@ -75,9 +87,14 @@ Browse all available endpoints interactively:
 
 ```bash
 nuon api --list
+
+# Include deprecated endpoints in the browser list
+nuon api --list --show-deprecated
 ```
 
 `--list` requires an interactive TTY. In CI or non-interactive shells, prefer `--info` plus explicit requests.
+By default, deprecated endpoints are hidden in `--list`; pass `--show-deprecated` to include them.
+Deprecated endpoints are prefixed with `[deprecated]` in the list description.
 
 | Key       | Action                                |
 | --------- | ------------------------------------- |
