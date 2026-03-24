@@ -60,9 +60,10 @@ func Resolve(api *spec.API, inputPath, payload, methodOverride string, cfg *conf
 	// via env vars or interactive selection. Otherwise use the input as-is.
 	resolvedPath := inputPath
 	if strings.Contains(inputPath, "{") {
-		debug.Log("dispatch: resolving path params in %s", inputPath)
+		pathToResolve := mergeTemplateWithInput(matched.Path, inputPath)
+		debug.Log("dispatch: resolving path params in %s", pathToResolve)
 		var err error
-		resolvedPath, err = resolve.PathParams(matched.Path, cfg, c)
+		resolvedPath, err = resolve.PathParams(pathToResolve, cfg, c)
 		if err != nil {
 			return nil, err
 		}
@@ -75,6 +76,32 @@ func Resolve(api *spec.API, inputPath, payload, methodOverride string, cfg *conf
 		Method:  method,
 		Payload: payload,
 	}, nil
+}
+
+// mergeTemplateWithInput preserves concrete path segments from user input while
+// keeping template placeholders for unresolved segments.
+func mergeTemplateWithInput(templatePath, inputPath string) string {
+	templateParts := strings.Split(templatePath, "/")
+	inputParts := strings.Split(inputPath, "/")
+
+	if len(templateParts) != len(inputParts) {
+		return templatePath
+	}
+
+	merged := make([]string, len(templateParts))
+	copy(merged, templateParts)
+
+	for i := range templateParts {
+		if isPathParamSegment(templateParts[i]) && !isPathParamSegment(inputParts[i]) {
+			merged[i] = inputParts[i]
+		}
+	}
+
+	return strings.Join(merged, "/")
+}
+
+func isPathParamSegment(segment string) bool {
+	return strings.HasPrefix(segment, "{") && strings.HasSuffix(segment, "}")
 }
 
 // inferMethod determines the HTTP method from context.
