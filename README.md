@@ -127,7 +127,7 @@ nuon api /v1/apps --raw | jq '.[0].name'
 
 Path parameters like `{app_id}` are resolved in order:
 
-1. Literal value if the path contains no `{...}` placeholders
+1. Concrete value already present in that path segment
 2. Environment variable (`NUON_APP_ID`, `NUON_INSTALL_ID`, `NUON_ORG_ID`)
 3. Interactive selector that fetches available resources from the API
 
