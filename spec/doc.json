@@ -8,7 +8,7 @@
             "name": "Nuon Support",
             "email": "support@nuon.co"
         },
-        "version": "0.19.807"
+        "version": "0.19.862"
     },
     "host": "api.nuon.co",
     "basePath": "/",
@@ -738,6 +738,7 @@
                 ],
                 "summary": "get action workflow for an app",
                 "operationId": "GetActionWorkflowConfigs",
+                "deprecated": true,
                 "parameters": [
                     {
                         "type": "string",
@@ -1548,6 +1549,7 @@
                 ],
                 "summary": "get an app action workflow",
                 "operationId": "GetAppActionWorkflow",
+                "deprecated": true,
                 "parameters": [
                     {
                         "type": "string",
@@ -2539,6 +2541,176 @@
                 }
             }
         },
+        "/v1/apps/{app_id}/branches/{app_branch_id}": {
+            "get": {
+                "security": [
+                    {
+                        "APIKey": []
+                    },
+                    {
+                        "OrgID": []
+                    }
+                ],
+                "description": "Get an app branch by ID. Use `latest_config=true` query parameter to include only the most recent config with its VCS settings and install groups.\n",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "apps"
+                ],
+                "summary": "get an app branch",
+                "operationId": "GetAppBranch",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "app ID",
+                        "name": "app_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "app branch ID",
+                        "name": "app_branch_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "include only the latest config",
+                        "name": "latest_config",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppBranch"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "APIKey": []
+                    },
+                    {
+                        "OrgID": []
+                    }
+                ],
+                "description": "Updates app branch metadata (name only). To update configuration, create a new AppBranchConfig via POST /branches/:id/configs",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "apps"
+                ],
+                "summary": "update app branch metadata",
+                "operationId": "UpdateAppBranch",
+                "parameters": [
+                    {
+                        "description": "Input",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.UpdateAppBranchRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "app ID",
+                        "name": "app_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "app branch ID",
+                        "name": "app_branch_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppBranch"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/apps/{app_id}/branches/{app_branch_id}/configs": {
             "get": {
                 "security": [
@@ -2606,6 +2778,356 @@
                             "items": {
                                 "$ref": "#/definitions/app.AppConfig"
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "APIKey": []
+                    },
+                    {
+                        "OrgID": []
+                    }
+                ],
+                "description": "Create a branch configuration for an app.\n",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "apps"
+                ],
+                "summary": "create an app branch config",
+                "operationId": "CreateAppBranchConfig",
+                "parameters": [
+                    {
+                        "description": "Input",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.CreateAppBranchConfigRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "app ID",
+                        "name": "app_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "app branch ID",
+                        "name": "app_branch_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppBranchConfig"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/apps/{app_id}/branches/{app_branch_id}/latest-config": {
+            "get": {
+                "security": [
+                    {
+                        "APIKey": []
+                    },
+                    {
+                        "OrgID": []
+                    }
+                ],
+                "description": "Returns the latest AppBranchConfig ordered by config_number (descending)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "apps"
+                ],
+                "summary": "get latest app branch config",
+                "operationId": "GetAppBranchLatestConfig",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "app ID",
+                        "name": "app_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "app branch ID",
+                        "name": "app_branch_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppBranchConfig"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/apps/{app_id}/branches/{app_branch_id}/runs": {
+            "get": {
+                "security": [
+                    {
+                        "APIKey": []
+                    },
+                    {
+                        "OrgID": []
+                    }
+                ],
+                "description": "Returns workflow runs for an app branch ordered by creation time (descending)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "apps"
+                ],
+                "summary": "get app branch workflow runs",
+                "operationId": "GetAppBranchRuns",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "app ID",
+                        "name": "app_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "app branch ID",
+                        "name": "app_branch_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "offset of results to return",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "limit of results to return",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "page number of results to return",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/app.Workflow"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "APIKey": []
+                    },
+                    {
+                        "OrgID": []
+                    }
+                ],
+                "description": "Creates and triggers a workflow run for an app branch. If config_id is not provided, uses the latest config.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "apps"
+                ],
+                "summary": "trigger app branch workflow run",
+                "operationId": "TriggerAppBranchRun",
+                "parameters": [
+                    {
+                        "description": "Input",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.TriggerAppBranchRunRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "app ID",
+                        "name": "app_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "app branch ID",
+                        "name": "app_branch_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppBranchRun"
                         }
                     },
                     "400": {
@@ -3172,7 +3694,6 @@
                 ],
                 "summary": "delete a component",
                 "operationId": "DeleteAppComponent",
-                "deprecated": true,
                 "parameters": [
                     {
                         "type": "string",
@@ -3249,7 +3770,6 @@
                 ],
                 "summary": "update a component",
                 "operationId": "UpdateAppComponent",
-                "deprecated": true,
                 "parameters": [
                     {
                         "type": "string",
@@ -4797,6 +5317,7 @@
                     "apps"
                 ],
                 "operationId": "UpdateAppConfig",
+                "deprecated": true,
                 "parameters": [
                     {
                         "description": "Input",
@@ -6966,101 +7487,6 @@
                 }
             }
         },
-        "/v1/apps/{app_id}/releases": {
-            "get": {
-                "security": [
-                    {
-                        "APIKey": []
-                    },
-                    {
-                        "OrgID": []
-                    }
-                ],
-                "description": "Returns all releases for the provided app.\n",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "releases"
-                ],
-                "summary": "get all releases for an app",
-                "operationId": "GetAppReleases",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "app ID",
-                        "name": "app_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "default": 0,
-                        "description": "offset of results to return",
-                        "name": "offset",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "default": 10,
-                        "description": "limit of results to return",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "default": 0,
-                        "description": "page number of results to return",
-                        "name": "page",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/app.ComponentRelease"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/apps/{app_id}/runner-configs": {
             "get": {
                 "security": [
@@ -7611,6 +8037,220 @@
                     },
                     "403": {
                         "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/apps/{app_id}/sandbox/builds": {
+            "get": {
+                "security": [
+                    {
+                        "APIKey": []
+                    },
+                    {
+                        "OrgID": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "apps"
+                ],
+                "summary": "get app sandbox builds",
+                "operationId": "GetAppSandboxBuilds",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "app ID",
+                        "name": "app_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "offset of results to return",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "limit of results to return",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/app.AppSandboxBuild"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "APIKey": []
+                    },
+                    {
+                        "OrgID": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "apps"
+                ],
+                "summary": "create app sandbox build",
+                "operationId": "CreateAppSandboxBuild",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "app ID",
+                        "name": "app_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppSandboxBuild"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/apps/{app_id}/sandbox/builds/{build_id}": {
+            "get": {
+                "security": [
+                    {
+                        "APIKey": []
+                    },
+                    {
+                        "OrgID": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "apps"
+                ],
+                "summary": "get app sandbox build",
+                "operationId": "GetAppSandboxBuild",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "app ID",
+                        "name": "app_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "sandbox build ID",
+                        "name": "build_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.AppSandboxBuild"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/stderr.ErrResponse"
                         }
@@ -8784,6 +9424,7 @@
                 ],
                 "summary": "get a component",
                 "operationId": "GetComponent",
+                "deprecated": true,
                 "parameters": [
                     {
                         "type": "string",
@@ -10093,179 +10734,6 @@
                 }
             }
         },
-        "/v1/components/{component_id}/releases": {
-            "get": {
-                "security": [
-                    {
-                        "APIKey": []
-                    },
-                    {
-                        "OrgID": []
-                    }
-                ],
-                "description": "Returns all releases for the provided component.\n",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "releases"
-                ],
-                "summary": "get all releases for a component",
-                "operationId": "GetComponentReleases",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "component ID",
-                        "name": "component_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "default": 0,
-                        "description": "offset of results to return",
-                        "name": "offset",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "default": 10,
-                        "description": "limit of results to return",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "default": 0,
-                        "description": "page number of results to return",
-                        "name": "page",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/app.ComponentRelease"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "APIKey": []
-                    },
-                    {
-                        "OrgID": []
-                    }
-                ],
-                "description": "Create a release for a component.\n",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "releases"
-                ],
-                "summary": "create a release",
-                "operationId": "CreateComponentRelease",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "component ID",
-                        "name": "component_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Input",
-                        "name": "req",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/service.CreateComponentReleaseRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/app.ComponentRelease"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/general/cli-config": {
             "get": {
                 "description": "Returns CLI configuration and settings.\n",
@@ -11195,6 +11663,7 @@
                 ],
                 "summary": "get an install sandbox run",
                 "operationId": "GetInstallSandboxRun",
+                "deprecated": true,
                 "parameters": [
                     {
                         "type": "string",
@@ -12107,6 +12576,7 @@
                 ],
                 "summary": "get an install action workflow",
                 "operationId": "GetInstallActionWorkflow",
+                "deprecated": true,
                 "parameters": [
                     {
                         "type": "string",
@@ -12959,6 +13429,85 @@
                 }
             }
         },
+        "/v1/installs/{install_id}/actions/{action_id}/outputs": {
+            "get": {
+                "security": [
+                    {
+                        "APIKey": []
+                    },
+                    {
+                        "OrgID": []
+                    }
+                ],
+                "description": "Return the latest outputs for an action workflow.\n\nThe action_id parameter accepts either an action workflow ID or name.\n\n**NOTE** requires a valid install.\n",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "installs"
+                ],
+                "summary": "get an install action workflow outputs",
+                "operationId": "GetInstallActionWorkflowOutputs",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "install ID",
+                        "name": "install_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "action workflow ID or name",
+                        "name": "action_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/installs/{install_id}/actions/{action_id}/recent-runs": {
             "get": {
                 "security": [
@@ -13023,6 +13572,76 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/app.InstallActionWorkflow"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/installs/{install_id}/app-permissions-config": {
+            "get": {
+                "security": [
+                    {
+                        "APIKey": []
+                    },
+                    {
+                        "OrgID": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "installs"
+                ],
+                "summary": "get app permissions config for an install with provisioning status",
+                "operationId": "GetInstallAppPermissionsConfig",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "install ID",
+                        "name": "install_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/service.InstallAppPermissionsConfigResponse"
                         }
                     },
                     "400": {
@@ -14624,6 +15243,7 @@
                 ],
                 "summary": "get an install's latest deploy",
                 "operationId": "GetInstallLatestDeploy",
+                "deprecated": true,
                 "parameters": [
                     {
                         "type": "string",
@@ -16094,6 +16714,76 @@
                 }
             }
         },
+        "/v1/installs/{install_id}/runner-bootstrap-token": {
+            "post": {
+                "security": [
+                    {
+                        "APIKey": []
+                    },
+                    {
+                        "OrgID": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "installs"
+                ],
+                "summary": "create a bootstrap token for an install's runner",
+                "operationId": "CreateRunnerBootstrapToken",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "install ID",
+                        "name": "install_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/service.CreateRunnerBootstrapTokenResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/installs/{install_id}/runner-group": {
             "get": {
                 "security": [
@@ -16790,6 +17480,12 @@
                         "in": "query"
                     },
                     {
+                        "type": "boolean",
+                        "description": "filter by finished state",
+                        "name": "finished",
+                        "in": "query"
+                    },
+                    {
                         "type": "string",
                         "description": "filter workflows created after timestamp (RFC3339 format)",
                         "name": "created_at_gte",
@@ -16990,6 +17686,454 @@
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/onboarding": {
+            "post": {
+                "security": [
+                    {
+                        "APIKey": []
+                    }
+                ],
+                "description": "Creates a new active onboarding session for the current account",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "onboarding"
+                ],
+                "summary": "Start a new onboarding session",
+                "operationId": "CreateOnboarding",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/app.Onboarding"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/onboarding/current": {
+            "get": {
+                "security": [
+                    {
+                        "APIKey": []
+                    }
+                ],
+                "description": "Returns the active onboarding session for the current account",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "onboarding"
+                ],
+                "summary": "Get current onboarding session",
+                "operationId": "GetCurrentOnboarding",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.Onboarding"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "APIKey": []
+                    }
+                ],
+                "description": "Marks the current active onboarding session as abandoned",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "onboarding"
+                ],
+                "summary": "Abandon onboarding session",
+                "operationId": "AbandonOnboarding",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.Onboarding"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/onboarding/current/steps/deploy": {
+            "post": {
+                "security": [
+                    {
+                        "APIKey": []
+                    },
+                    {
+                        "OrgID": []
+                    }
+                ],
+                "description": "Advances the onboarding past the deploy monitoring to get started",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "onboarding"
+                ],
+                "summary": "Complete the deploy step",
+                "operationId": "CompleteOnboardingDeployStep",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.Onboarding"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/onboarding/current/steps/get-started": {
+            "post": {
+                "security": [
+                    {
+                        "APIKey": []
+                    },
+                    {
+                        "OrgID": []
+                    }
+                ],
+                "description": "Marks the onboarding session as completed",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "onboarding"
+                ],
+                "summary": "Complete onboarding",
+                "operationId": "CompleteOnboardingGetStartedStep",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.Onboarding"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/onboarding/current/steps/install": {
+            "post": {
+                "security": [
+                    {
+                        "APIKey": []
+                    },
+                    {
+                        "OrgID": []
+                    }
+                ],
+                "description": "Creates an install and advances the onboarding to the install status step",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "onboarding"
+                ],
+                "summary": "Complete the install step",
+                "operationId": "CompleteOnboardingInstallStep",
+                "parameters": [
+                    {
+                        "description": "Input",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.CompleteInstallStepRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.Onboarding"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/onboarding/current/steps/organization": {
+            "post": {
+                "security": [
+                    {
+                        "APIKey": []
+                    }
+                ],
+                "description": "Creates a sandbox organization or attaches an existing one, then advances the onboarding to the app profile step",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "onboarding"
+                ],
+                "summary": "Complete the organization step",
+                "operationId": "CompleteOnboardingOrganizationStep",
+                "parameters": [
+                    {
+                        "description": "Input",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.CompleteOrganizationStepRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.Onboarding"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/onboarding/current/steps/your-stack": {
+            "post": {
+                "security": [
+                    {
+                        "APIKey": []
+                    },
+                    {
+                        "OrgID": []
+                    }
+                ],
+                "description": "Configures the application profile and advances the onboarding to the install step",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "onboarding"
+                ],
+                "summary": "Complete the your stack step",
+                "operationId": "CompleteOnboardingYourStackStep",
+                "parameters": [
+                    {
+                        "description": "Input",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.CompleteYourStackStepRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.Onboarding"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/onboarding/example-apps": {
+            "get": {
+                "security": [
+                    {
+                        "APIKey": []
+                    }
+                ],
+                "description": "Returns the list of available example applications for onboarding",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "onboarding"
+                ],
+                "summary": "Get example apps catalog",
+                "operationId": "GetOnboardingExampleApps",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/service.ExampleApp"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/stderr.ErrResponse"
                         }
@@ -18052,172 +19196,6 @@
                             "items": {
                                 "$ref": "#/definitions/app.OrgFeatureInfo"
                             }
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/releases/{release_id}": {
-            "get": {
-                "security": [
-                    {
-                        "APIKey": []
-                    },
-                    {
-                        "OrgID": []
-                    }
-                ],
-                "description": "Return a release by id.\n",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "releases"
-                ],
-                "summary": "get a release",
-                "operationId": "GetRelease",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "release ID",
-                        "name": "release_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/app.ComponentRelease"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/releases/{release_id}/steps": {
-            "get": {
-                "security": [
-                    {
-                        "APIKey": []
-                    },
-                    {
-                        "OrgID": []
-                    }
-                ],
-                "description": "Return a release by id.\n",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "releases"
-                ],
-                "summary": "get a release's steps",
-                "operationId": "GetReleaseSteps",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "release ID",
-                        "name": "release_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "default": 0,
-                        "description": "offset of results to return",
-                        "name": "offset",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "default": 10,
-                        "description": "limit of results to return",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "default": 0,
-                        "description": "page number of results to return",
-                        "name": "page",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/app.ComponentReleaseStep"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/stderr.ErrResponse"
                         }
                     }
                 }
@@ -19671,6 +20649,85 @@
                 }
             }
         },
+        "/v1/runners/{runner_id}/mng/restart": {
+            "post": {
+                "security": [
+                    {
+                        "APIKey": []
+                    },
+                    {
+                        "OrgID": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "runners"
+                ],
+                "summary": "restart the runner install process via the mng process",
+                "operationId": "RestartRunnerInstall",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "runner ID",
+                        "name": "runner_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Input",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.MngRestartRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/runners/{runner_id}/mng/shutdown": {
             "post": {
                 "security": [
@@ -19690,7 +20747,7 @@
                 "tags": [
                     "runners"
                 ],
-                "summary": "shut down an install runner management process",
+                "summary": "shut down an install runner's mng process. does not shut down the install runner process.",
                 "operationId": "ShutDownRunnerMng",
                 "parameters": [
                     {
@@ -19848,7 +20905,7 @@
                 "tags": [
                     "runners"
                 ],
-                "summary": "update an install runner via the mng process",
+                "summary": "update an install runner via the mng process. this is practically a restart.",
                 "operationId": "UpdateRunnerMng",
                 "parameters": [
                     {
@@ -20384,6 +21441,7 @@
                 ],
                 "summary": "create terraform workspace",
                 "operationId": "CreateTerraformWorkspace",
+                "deprecated": true,
                 "parameters": [
                     {
                         "description": "Input",
@@ -21737,6 +22795,94 @@
                 }
             }
         },
+        "/v1/vcs/connections/{connection_id}/branches": {
+            "get": {
+                "security": [
+                    {
+                        "APIKey": []
+                    },
+                    {
+                        "OrgID": []
+                    }
+                ],
+                "description": "Returns list of branches for the specified repository",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "vcs"
+                ],
+                "summary": "List branches for a repository",
+                "operationId": "GetVCSConnectionRepoBranches",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "connection ID",
+                        "name": "connection_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "repository owner",
+                        "name": "owner",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "repository name",
+                        "name": "repo",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/service.Branch"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/vcs/connections/{connection_id}/check-status": {
             "get": {
                 "security": [
@@ -21862,6 +23008,199 @@
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/workflows": {
+            "get": {
+                "security": [
+                    {
+                        "APIKey": []
+                    },
+                    {
+                        "OrgID": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "installs"
+                ],
+                "summary": "get all workflows for the org",
+                "operationId": "GetOrgWorkflows",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "offset of results to return",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "limit of results to return",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "page number of results to return",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "exclude plan only workflows when set to false",
+                        "name": "planonly",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "filter by workflow type",
+                        "name": "type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "filter by finished state",
+                        "name": "finished",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "filter workflows created after timestamp (RFC3339 format)",
+                        "name": "created_at_gte",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "filter workflows created before timestamp (RFC3339 format)",
+                        "name": "created_at_lte",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/app.Workflow"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/workflows/pending-approvals": {
+            "get": {
+                "security": [
+                    {
+                        "APIKey": []
+                    },
+                    {
+                        "OrgID": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "installs"
+                ],
+                "summary": "get all pending workflow step approvals for the org",
+                "operationId": "GetOrgPendingApprovals",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "offset of results to return",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "limit of results to return",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "page number of results to return",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/app.WorkflowStepApproval"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/stderr.ErrResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/stderr.ErrResponse"
                         }
@@ -22946,6 +24285,9 @@
                 "created_by_id": {
                     "type": "string"
                 },
+                "enable_kube_config": {
+                    "$ref": "#/definitions/sql.NullBool"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -23274,6 +24616,9 @@
                 "org_id": {
                     "type": "string"
                 },
+                "queue_id": {
+                    "type": "string"
+                },
                 "runner_config": {
                     "$ref": "#/definitions/app.AppRunnerConfig"
                 },
@@ -23315,6 +24660,15 @@
                 "created_by_id": {
                     "type": "string"
                 },
+                "gcp_permissions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "gcp_predefined_role": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -23338,6 +24692,9 @@
                 "app_config_id": {
                     "type": "string"
                 },
+                "cloud_platform": {
+                    "type": "string"
+                },
                 "cloudformation_param_name": {
                     "type": "string"
                 },
@@ -23355,6 +24712,9 @@
                 },
                 "display_name": {
                     "type": "string"
+                },
+                "enabled_in_stack": {
+                    "$ref": "#/definitions/sql.NullBool"
                 },
                 "id": {
                     "type": "string"
@@ -23394,8 +24754,11 @@
                 "app_id": {
                     "type": "string"
                 },
-                "connected_github_vcs_config_id": {
-                    "type": "string"
+                "configs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/app.AppBranchConfig"
+                    }
                 },
                 "created_at": {
                     "type": "string"
@@ -23412,6 +24775,9 @@
                 "org_id": {
                     "type": "string"
                 },
+                "queue": {
+                    "$ref": "#/definitions/app.Queue"
+                },
                 "updated_at": {
                     "type": "string"
                 },
@@ -23420,6 +24786,182 @@
                     "items": {
                         "$ref": "#/definitions/app.Workflow"
                     }
+                }
+            }
+        },
+        "app.AppBranchConfig": {
+            "type": "object",
+            "properties": {
+                "action_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "app_branch_id": {
+                    "type": "string"
+                },
+                "component_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "config_number": {
+                    "description": "generated view field",
+                    "type": "integer"
+                },
+                "connected_github_vcs_config": {
+                    "$ref": "#/definitions/app.ConnectedGithubVCSConfig"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "install_groups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/app.AppBranchInstallGroup"
+                    }
+                },
+                "org_id": {
+                    "type": "string"
+                },
+                "public_git_vcs_config": {
+                    "$ref": "#/definitions/app.PublicGitVCSConfig"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "workflows": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/app.Workflow"
+                    }
+                }
+            }
+        },
+        "app.AppBranchInstallGroup": {
+            "type": "object",
+            "properties": {
+                "app_branch_config_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "install_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "max_parallel": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "order": {
+                    "type": "integer"
+                },
+                "org_id": {
+                    "type": "string"
+                },
+                "requires_approval": {
+                    "type": "boolean"
+                },
+                "rollback_on_failure": {
+                    "type": "boolean"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "app.AppBranchRun": {
+            "type": "object",
+            "properties": {
+                "app_branch": {
+                    "$ref": "#/definitions/app.AppBranch"
+                },
+                "app_branch_config": {
+                    "$ref": "#/definitions/app.AppBranchConfig"
+                },
+                "app_config_id": {
+                    "description": "AppConfigID is the app config that was created/synced during this run",
+                    "type": "string"
+                },
+                "commit_sha": {
+                    "description": "CommitSHA is the VCS commit that triggered or is associated with this run\nDEPRECATED: Use VCSConnectionCommit relationship instead",
+                    "type": "string"
+                },
+                "completed_at": {
+                    "description": "CompletedAt tracks when execution finished",
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "$ref": "#/definitions/app.Account"
+                },
+                "created_by_id": {
+                    "type": "string"
+                },
+                "error_message": {
+                    "description": "ErrorMessage stores any error that occurred during execution",
+                    "type": "string"
+                },
+                "force": {
+                    "description": "Force indicates if this run was forced (bypassing change detection)",
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "log_stream": {
+                    "$ref": "#/definitions/app.LogStream"
+                },
+                "log_stream_id": {
+                    "description": "LogStreamID is the log stream created during this run for event tracking",
+                    "type": "string"
+                },
+                "queue_signal": {
+                    "description": "QueueSignal is the signal that was enqueued to trigger this run",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/app.QueueSignal"
+                        }
+                    ]
+                },
+                "started_at": {
+                    "description": "StartedAt tracks when execution actually began",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "Status tracks the current state of the run\nValues: pending, running, success, failed, cancelled",
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "vcs_connection_commit": {
+                    "$ref": "#/definitions/app.VCSConnectionCommit"
+                },
+                "workflow": {
+                    "$ref": "#/definitions/app.Workflow"
                 }
             }
         },
@@ -23458,6 +25000,12 @@
         "app.AppConfig": {
             "type": "object",
             "properties": {
+                "action_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "action_workflow_configs": {
                     "type": "array",
                     "items": {
@@ -23505,6 +25053,9 @@
                 },
                 "input": {
                     "$ref": "#/definitions/app.AppInputConfig"
+                },
+                "intermediate_config": {
+                    "$ref": "#/definitions/blobstore.Blob"
                 },
                 "operation_role_config": {
                     "$ref": "#/definitions/app.AppOperationRoleConfig"
@@ -23623,6 +25174,7 @@
                     "type": "integer"
                 },
                 "internal": {
+                    "description": "Deprecated: this field was never enforced and has no effect.",
                     "type": "boolean"
                 },
                 "name": {
@@ -24019,7 +25571,8 @@
                 "azure-acs",
                 "local",
                 "aws",
-                "azure"
+                "azure",
+                "gcp"
             ],
             "x-enum-varnames": [
                 "AppRunnerTypeUnknown",
@@ -24029,8 +25582,59 @@
                 "AppRunnerTypeAzureACS",
                 "AppRunnerTypeLocal",
                 "AppRunnerTypeAWS",
-                "AppRunnerTypeAzure"
+                "AppRunnerTypeAzure",
+                "AppRunnerTypeGCP"
             ]
+        },
+        "app.AppSandboxBuild": {
+            "type": "object",
+            "properties": {
+                "app_config_id": {
+                    "type": "string"
+                },
+                "app_id": {
+                    "type": "string"
+                },
+                "app_sandbox_config_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "$ref": "#/definitions/app.Account"
+                },
+                "created_by_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "log_stream": {
+                    "$ref": "#/definitions/app.LogStream"
+                },
+                "runner_job": {
+                    "$ref": "#/definitions/app.RunnerJob"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "status_description": {
+                    "type": "string"
+                },
+                "status_v2": {
+                    "$ref": "#/definitions/app.CompositeStatus"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "vcs_connection_commit": {
+                    "$ref": "#/definitions/app.VCSConnectionCommit"
+                },
+                "vcs_connection_commit_id": {
+                    "type": "string"
+                }
+            }
         },
         "app.AppSandboxConfig": {
             "type": "object",
@@ -24383,11 +25987,13 @@
             "enum": [
                 "aws",
                 "azure",
+                "gcp",
                 "unknown"
             ],
             "x-enum-varnames": [
                 "CloudPlatformAWS",
                 "CloudPlatformAzure",
+                "CloudPlatformGCP",
                 "CloudPlatformUnknown"
             ]
         },
@@ -24515,6 +26121,14 @@
                     "items": {
                         "$ref": "#/definitions/app.PolicyReport"
                     }
+                },
+                "queue_signal": {
+                    "description": "QueueSignal is the signal enqueued when this build was created via the queue path",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/app.QueueSignal"
+                        }
+                    ]
                 },
                 "releases": {
                     "type": "array",
@@ -24791,6 +26405,9 @@
                 "id": {
                     "type": "string"
                 },
+                "path_filter": {
+                    "type": "string"
+                },
                 "repo": {
                     "type": "string"
                 },
@@ -24918,6 +26535,85 @@
                     "type": "string"
                 },
                 "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "app.GCPAccount": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "project_id": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "app.GCPStackOutputs": {
+            "type": "object",
+            "properties": {
+                "break_glass_sa_emails": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "custom_sa_emails": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "deprovision_sa_email": {
+                    "type": "string"
+                },
+                "install_inputs": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "maintenance_sa_email": {
+                    "type": "string"
+                },
+                "network_id": {
+                    "type": "string"
+                },
+                "network_name": {
+                    "type": "string"
+                },
+                "private_subnet_name": {
+                    "type": "string"
+                },
+                "project_id": {
+                    "type": "string"
+                },
+                "provision_sa_email": {
+                    "type": "string"
+                },
+                "public_subnet_name": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "runner_service_account_email": {
+                    "type": "string"
+                },
+                "runner_subnet_name": {
                     "type": "string"
                 }
             }
@@ -25158,6 +26854,9 @@
                         "$ref": "#/definitions/app.DriftedObject"
                     }
                 },
+                "gcp_account": {
+                    "$ref": "#/definitions/app.GCPAccount"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -25311,6 +27010,9 @@
                 },
                 "created_by_id": {
                     "type": "string"
+                },
+                "enable_kube_config": {
+                    "$ref": "#/definitions/sql.NullBool"
                 },
                 "execution_time": {
                     "description": "after query",
@@ -25933,6 +27635,9 @@
                     "type": "object",
                     "additionalProperties": {}
                 },
+                "gcp": {
+                    "$ref": "#/definitions/app.GCPStackOutputs"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -26365,6 +28070,75 @@
                     }
                 },
                 "variant": {
+                    "type": "string"
+                }
+            }
+        },
+        "app.Onboarding": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "app_attributes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "app_branch_id": {
+                    "type": "string"
+                },
+                "app_id": {
+                    "type": "string"
+                },
+                "app_type": {
+                    "description": "Step 2: Your Stack",
+                    "type": "string"
+                },
+                "cloud_provider": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by_id": {
+                    "type": "string"
+                },
+                "current_step": {
+                    "type": "string"
+                },
+                "example_app_slug": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "install_id": {
+                    "type": "string"
+                },
+                "install_mode": {
+                    "description": "Step 3: Install",
+                    "type": "string"
+                },
+                "org_id": {
+                    "description": "Step 1: Organization",
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "step_error": {
+                    "type": "string"
+                },
+                "step_status": {
+                    "description": "Async step status (for queue-based signal processing)",
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "workflow_id": {
                     "type": "string"
                 }
             }
@@ -26875,12 +28649,204 @@
                 "id": {
                     "type": "string"
                 },
+                "path_filter": {
+                    "type": "string"
+                },
                 "repo": {
                     "description": "actual configuration",
                     "type": "string"
                 },
                 "updated_at": {
                     "type": "string"
+                }
+            }
+        },
+        "app.Queue": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by_id": {
+                    "type": "string"
+                },
+                "emitters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/app.QueueEmitter"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "max_depth": {
+                    "type": "integer"
+                },
+                "max_in_flight": {
+                    "type": "integer"
+                },
+                "org_id": {
+                    "type": "string"
+                },
+                "owner_id": {
+                    "type": "string"
+                },
+                "owner_type": {
+                    "type": "string"
+                },
+                "queue_signal": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/app.QueueSignal"
+                    }
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "workflow": {
+                    "$ref": "#/definitions/signaldb.WorkflowRef"
+                }
+            }
+        },
+        "app.QueueEmitter": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by_id": {
+                    "type": "string"
+                },
+                "cron_schedule": {
+                    "description": "Schedule configuration\nFor cron mode: cron expression (e.g., \"0 * * * *\")",
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "emit_count": {
+                    "type": "integer"
+                },
+                "fired": {
+                    "description": "For scheduled mode: whether the signal has been fired",
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "last_emitted_at": {
+                    "type": "string"
+                },
+                "mode": {
+                    "description": "Emitter mode: \"cron\" for recurring, \"scheduled\" for one-shot",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/app.QueueEmitterMode"
+                        }
+                    ]
+                },
+                "name": {
+                    "description": "Emitter identity",
+                    "type": "string"
+                },
+                "next_emit_at": {
+                    "type": "string"
+                },
+                "org_id": {
+                    "type": "string"
+                },
+                "queue_id": {
+                    "description": "Many-to-one: each emitter belongs to exactly one queue",
+                    "type": "string"
+                },
+                "scheduled_at": {
+                    "description": "For scheduled mode: the time to fire the signal",
+                    "type": "string"
+                },
+                "signal_template": {
+                    "$ref": "#/definitions/signaldb.SignalData"
+                },
+                "signal_type": {
+                    "description": "Signal template - the signal to emit on each tick",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "Runtime state using shared CompositeStatus",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/app.CompositeStatus"
+                        }
+                    ]
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "workflow": {
+                    "description": "Workflow reference for the emitter's cron workflow",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/signaldb.WorkflowRef"
+                        }
+                    ]
+                }
+            }
+        },
+        "app.QueueEmitterMode": {
+            "type": "string",
+            "enum": [
+                "cron",
+                "scheduled"
+            ],
+            "x-enum-varnames": [
+                "QueueEmitterModeCron",
+                "QueueEmitterModeScheduled"
+            ]
+        },
+        "app.QueueSignal": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by_id": {
+                    "type": "string"
+                },
+                "emitter_id": {
+                    "description": "Optional: if this signal was emitted by an emitter",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "org_id": {
+                    "type": "string"
+                },
+                "owner_id": {
+                    "type": "string"
+                },
+                "owner_type": {
+                    "type": "string"
+                },
+                "queue": {
+                    "$ref": "#/definitions/app.Queue"
+                },
+                "queue_id": {
+                    "type": "string"
+                },
+                "signal": {
+                    "$ref": "#/definitions/signaldb.SignalData"
+                },
+                "status": {
+                    "$ref": "#/definitions/app.CompositeStatus"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "workflow": {
+                    "$ref": "#/definitions/signaldb.WorkflowRef"
                 }
             }
         },
@@ -27034,7 +29000,7 @@
                     "type": "string"
                 },
                 "aws_max_instance_lifetime": {
-                    "description": "Default: 7 days",
+                    "description": "Deprecated: instance refresh is now handled by a backend cron, not ASG MaxInstanceLifetime.",
                     "type": "integer"
                 },
                 "aws_tags": {
@@ -27563,6 +29529,7 @@
                 "helm-chart-build",
                 "kubernetes-manifest-build",
                 "noop-build",
+                "sandbox-build",
                 "oci-sync",
                 "noop-sync",
                 "fetch-image-metadata",
@@ -27613,6 +29580,7 @@
                 "",
                 "",
                 "",
+                "",
                 "shut down the vm",
                 "shutdown the runner mng process (usually triggers restart)",
                 "update the runner image/version (check for changes and update)",
@@ -27634,6 +29602,7 @@
                 "RunnerJobTypeHelmChartBuild",
                 "RunnerJobTypeKubernetesManifestBuild",
                 "RunnerJobTypeNOOPBuild",
+                "RunnerJobTypeSandboxBuild",
                 "RunnerJobTypeOCISync",
                 "RunnerJobTypeNOOPSync",
                 "RunnerJobTypeFetchImageMetadata",
@@ -27754,10 +29723,12 @@
         "app.StackType": {
             "type": "string",
             "enum": [
-                "aws-cloudformation"
+                "aws-cloudformation",
+                "gcp-terraform"
             ],
             "x-enum-varnames": [
-                "StackTypeAWS"
+                "StackTypeAWS",
+                "StackTypeGCP"
             ]
         },
         "app.Status": {
@@ -28176,6 +30147,13 @@
                 "message": {
                     "type": "string"
                 },
+                "owner_id": {
+                    "description": "Polymorphic ownership - references VCS config that owns this commit",
+                    "type": "string"
+                },
+                "owner_type": {
+                    "type": "string"
+                },
                 "sha": {
                     "type": "string"
                 },
@@ -28210,6 +30188,12 @@
         "app.Workflow": {
             "type": "object",
             "properties": {
+                "app_branch_runs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/app.AppBranchRun"
+                    }
+                },
                 "approval_option": {
                     "$ref": "#/definitions/app.InstallApprovalOption"
                 },
@@ -28578,11 +30562,14 @@
                 "WorkflowTypeActionWorkflowRun",
                 "WorkflowTypeSyncSecrets",
                 "WorkflowTypeDriftRun",
-                "WorkflowTypeAppBranchesManualUpdate",
+                "WorkflowTypeAppBranchesRun",
                 "WorkflowTypeAppBranchesConfigRepoUpdate",
                 "WorkflowTypeAppBranchesComponentRepoUpdate",
                 "WorkflowTypeReprovision"
             ]
+        },
+        "blobstore.Blob": {
+            "type": "object"
         },
         "config.AppPolicyEngine": {
             "type": "string",
@@ -28702,12 +30689,14 @@
             "enum": [
                 "ecr",
                 "acr",
+                "gar",
                 "private_oci",
                 "public_oci"
             ],
             "x-enum-varnames": [
                 "OCIRegistryTypeECR",
                 "OCIRegistryTypeACR",
+                "OCIRegistryTypeGAR",
                 "OCIRegistryTypePrivateOCI",
                 "OCIRegistryTypePublicOCI"
             ]
@@ -29033,6 +31022,20 @@
                 }
             }
         },
+        "github_com_nuonco_nuon_pkg_gcp_credentials.Config": {
+            "type": "object",
+            "properties": {
+                "impersonate_service_account": {
+                    "type": "string"
+                },
+                "project_id": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                }
+            }
+        },
         "github_com_nuonco_nuon_pkg_types_state.State": {
             "type": "object",
             "properties": {
@@ -29090,6 +31093,30 @@
                 }
             }
         },
+        "helpers.ConnectedGithubVCSConfigRequest": {
+            "type": "object",
+            "required": [
+                "directory",
+                "repo"
+            ],
+            "properties": {
+                "branch": {
+                    "type": "string"
+                },
+                "directory": {
+                    "type": "string"
+                },
+                "gitRef": {
+                    "type": "string"
+                },
+                "pathFilter": {
+                    "type": "string"
+                },
+                "repo": {
+                    "type": "string"
+                }
+            }
+        },
         "helpers.CreateInstallConfigParams": {
             "type": "object",
             "properties": {
@@ -29102,6 +31129,28 @@
             "type": "object",
             "properties": {
                 "managed_by": {
+                    "type": "string"
+                }
+            }
+        },
+        "helpers.PublicGitVCSConfigRequest": {
+            "type": "object",
+            "required": [
+                "branch",
+                "directory",
+                "repo"
+            ],
+            "properties": {
+                "branch": {
+                    "type": "string"
+                },
+                "directory": {
+                    "type": "string"
+                },
+                "pathFilter": {
+                    "type": "string"
+                },
+                "repo": {
                     "type": "string"
                 }
             }
@@ -29166,6 +31215,9 @@
                     "additionalProperties": {
                         "type": "string"
                     }
+                },
+                "gcp_auth": {
+                    "$ref": "#/definitions/github_com_nuonco_nuon_pkg_gcp_credentials.Config"
                 },
                 "id": {
                     "description": "ID is the ID of the EKS cluster",
@@ -29251,6 +31303,9 @@
                 "aws_auth": {
                     "$ref": "#/definitions/github_com_nuonco_nuon_pkg_aws_credentials.Config"
                 },
+                "azure_auth": {
+                    "$ref": "#/definitions/github_com_nuonco_nuon_pkg_azure_credentials.Config"
+                },
                 "builtin_env_vars": {
                     "type": "object",
                     "additionalProperties": {
@@ -29264,6 +31319,9 @@
                             "$ref": "#/definitions/kube.ClusterInfo"
                         }
                     ]
+                },
+                "gcp_auth": {
+                    "$ref": "#/definitions/github_com_nuonco_nuon_pkg_gcp_credentials.Config"
                 },
                 "id": {
                     "type": "string"
@@ -29373,14 +31431,6 @@
                 },
                 "fetch_image_metadata_plan": {
                     "$ref": "#/definitions/plantypes.FetchImageMetadataPlan"
-                },
-                "plan_auth": {
-                    "description": "Auth for cloud providers",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/plantypes.PlanAuth"
-                        }
-                    ]
                 },
                 "sandbox_run_plan": {
                     "$ref": "#/definitions/plantypes.SandboxRunPlan"
@@ -29565,11 +31615,25 @@
         "plantypes.HelmDeployPlan": {
             "type": "object",
             "properties": {
+                "aws_auth": {
+                    "description": "Auth for cloud providers",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_nuonco_nuon_pkg_aws_credentials.Config"
+                        }
+                    ]
+                },
+                "azure_auth": {
+                    "$ref": "#/definitions/github_com_nuonco_nuon_pkg_azure_credentials.Config"
+                },
                 "cluster_info": {
                     "$ref": "#/definitions/kube.ClusterInfo"
                 },
                 "create_namespace": {
                     "type": "boolean"
+                },
+                "gcp_auth": {
+                    "$ref": "#/definitions/github_com_nuonco_nuon_pkg_gcp_credentials.Config"
                 },
                 "helm_chart_id": {
                     "type": "string"
@@ -29661,8 +31725,22 @@
         "plantypes.KubernetesManifestDeployPlan": {
             "type": "object",
             "properties": {
+                "aws_auth": {
+                    "description": "Auth for cloud providers",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_nuonco_nuon_pkg_aws_credentials.Config"
+                        }
+                    ]
+                },
+                "azure_auth": {
+                    "$ref": "#/definitions/github_com_nuonco_nuon_pkg_azure_credentials.Config"
+                },
                 "cluster_info": {
                     "$ref": "#/definitions/kube.ClusterInfo"
+                },
+                "gcp_auth": {
+                    "$ref": "#/definitions/github_com_nuonco_nuon_pkg_gcp_credentials.Config"
                 },
                 "manifest": {
                     "description": "Manifest is populated at runtime from the OCI artifact.\nThis field is no longer set during plan creation - it's populated by the runner\nafter pulling the OCI artifact during Initialize().",
@@ -29757,17 +31835,6 @@
                 }
             }
         },
-        "plantypes.PlanAuth": {
-            "type": "object",
-            "properties": {
-                "aws_auth": {
-                    "$ref": "#/definitions/github_com_nuonco_nuon_pkg_aws_credentials.Config"
-                },
-                "azure_auth": {
-                    "$ref": "#/definitions/github_com_nuonco_nuon_pkg_azure_credentials.Config"
-                }
-            }
-        },
         "plantypes.SandboxMode": {
             "type": "object",
             "properties": {
@@ -29820,6 +31887,9 @@
                     "additionalProperties": {
                         "type": "string"
                     }
+                },
+                "gcp_auth": {
+                    "$ref": "#/definitions/github_com_nuonco_nuon_pkg_gcp_credentials.Config"
                 },
                 "git_source": {
                     "$ref": "#/definitions/plantypes.GitSource"
@@ -29966,6 +32036,9 @@
                         "type": "string"
                     }
                 },
+                "gcp_auth": {
+                    "$ref": "#/definitions/github_com_nuonco_nuon_pkg_gcp_credentials.Config"
+                },
                 "hooks": {
                     "$ref": "#/definitions/plantypes.TerraformDeployHooks"
                 },
@@ -30073,6 +32146,15 @@
                 "contents": {
                     "type": "string"
                 },
+                "gcp_permissions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "gcp_predefined_role": {
+                    "type": "string"
+                },
                 "managed_policy_name": {
                     "type": "string"
                 },
@@ -30089,11 +32171,22 @@
                 "name"
             ],
             "properties": {
+                "cloud_platform": {
+                    "type": "string",
+                    "enum": [
+                        "aws",
+                        "gcp"
+                    ]
+                },
                 "description": {
                     "type": "string"
                 },
                 "display_name": {
                     "type": "string"
+                },
+                "enabled_in_stack": {
+                    "type": "boolean",
+                    "x-nullable": true
                 },
                 "name": {
                     "type": "string"
@@ -30213,10 +32306,6 @@
                 "index": {
                     "type": "integer"
                 },
-                "internal": {
-                    "description": "New, optional fields",
-                    "type": "boolean"
-                },
                 "required": {
                     "type": "boolean"
                 },
@@ -30227,6 +32316,7 @@
                     "$ref": "#/definitions/app.AppInputSource"
                 },
                 "type": {
+                    "description": "New, optional fields",
                     "type": "string"
                 }
             }
@@ -30391,6 +32481,14 @@
                 }
             }
         },
+        "service.Branch": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "service.BuildAllComponentsRequest": {
             "type": "object"
         },
@@ -30419,6 +32517,92 @@
         },
         "service.CancelRunnerJobRequest": {
             "type": "object"
+        },
+        "service.CompleteInstallStepRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "aws_account": {
+                    "type": "object",
+                    "properties": {
+                        "region": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "azure_account": {
+                    "type": "object",
+                    "properties": {
+                        "location": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "inputs": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "install_mode": {
+                    "type": "string",
+                    "enum": [
+                        "cloud",
+                        "sandbox"
+                    ]
+                },
+                "metadata": {
+                    "type": "object",
+                    "properties": {
+                        "managed_by": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.CompleteOrganizationStepRequest": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "org_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.CompleteYourStackStepRequest": {
+            "type": "object",
+            "required": [
+                "app_type"
+            ],
+            "properties": {
+                "app_attributes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "app_type": {
+                    "type": "string",
+                    "enum": [
+                        "custom",
+                        "example"
+                    ]
+                },
+                "cloud_provider": {
+                    "type": "string"
+                },
+                "example_app_slug": {
+                    "type": "string"
+                }
+            }
         },
         "service.ComponentChildren": {
             "type": "object",
@@ -30473,27 +32657,6 @@
                 }
             }
         },
-        "service.ConnectedGithubVCSSandboxConfigRequest": {
-            "type": "object",
-            "required": [
-                "directory",
-                "repo"
-            ],
-            "properties": {
-                "branch": {
-                    "type": "string"
-                },
-                "directory": {
-                    "type": "string"
-                },
-                "gitRef": {
-                    "type": "string"
-                },
-                "repo": {
-                    "type": "string"
-                }
-            }
-        },
         "service.CreateActionWorkflowConfigRequest": {
             "type": "object",
             "required": [
@@ -30513,6 +32676,10 @@
                     "items": {
                         "type": "string"
                     }
+                },
+                "enable_kube_config": {
+                    "type": "boolean",
+                    "x-nullable": true
                 },
                 "references": {
                     "type": "array",
@@ -30601,6 +32768,10 @@
                 "command": {
                     "type": "string"
                 },
+                "enable_kube_config": {
+                    "type": "boolean",
+                    "x-nullable": true
+                },
                 "env_vars": {
                     "type": "object",
                     "additionalProperties": {
@@ -30666,16 +32837,29 @@
                 }
             }
         },
+        "service.CreateAppBranchConfigRequest": {
+            "type": "object",
+            "properties": {
+                "connected_github_vcs_config": {
+                    "$ref": "#/definitions/helpers.ConnectedGithubVCSConfigRequest"
+                },
+                "install_groups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/service.InstallGroupRequest"
+                    }
+                },
+                "public_git_vcs_config": {
+                    "$ref": "#/definitions/helpers.PublicGitVCSConfigRequest"
+                }
+            }
+        },
         "service.CreateAppBranchRequest": {
             "type": "object",
             "required": [
-                "connected_github_vcs_config_id",
                 "name"
             ],
             "properties": {
-                "connected_github_vcs_config_id": {
-                    "type": "string"
-                },
                 "name": {
                     "type": "string",
                     "minLength": 1
@@ -30864,7 +33048,7 @@
                     "type": "string"
                 },
                 "connected_github_vcs_config": {
-                    "$ref": "#/definitions/service.ConnectedGithubVCSSandboxConfigRequest"
+                    "$ref": "#/definitions/helpers.ConnectedGithubVCSConfigRequest"
                 },
                 "drift_schedule": {
                     "type": "string"
@@ -30882,7 +33066,7 @@
                     }
                 },
                 "public_git_vcs_config": {
-                    "$ref": "#/definitions/service.PublicGitVCSSandboxConfigRequest"
+                    "$ref": "#/definitions/helpers.PublicGitVCSConfigRequest"
                 },
                 "references": {
                     "type": "array",
@@ -30982,34 +33166,6 @@
                 },
                 "use_latest": {
                     "type": "boolean"
-                }
-            }
-        },
-        "service.CreateComponentReleaseRequest": {
-            "type": "object",
-            "properties": {
-                "auto_build": {
-                    "type": "boolean"
-                },
-                "build_id": {
-                    "type": "string"
-                },
-                "install_ids": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "strategy": {
-                    "type": "object",
-                    "properties": {
-                        "delay": {
-                            "type": "string"
-                        },
-                        "installs_per_step": {
-                            "type": "integer"
-                        }
-                    }
                 }
             }
         },
@@ -31350,6 +33506,17 @@
                         }
                     }
                 },
+                "gcp_account": {
+                    "type": "object",
+                    "properties": {
+                        "project_id": {
+                            "type": "string"
+                        },
+                        "region": {
+                            "type": "string"
+                        }
+                    }
+                },
                 "inputs": {
                     "type": "object",
                     "additionalProperties": {
@@ -31389,6 +33556,17 @@
                     "type": "object",
                     "properties": {
                         "location": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "gcp_account": {
+                    "type": "object",
+                    "properties": {
+                        "project_id": {
+                            "type": "string"
+                        },
+                        "region": {
                             "type": "string"
                         }
                     }
@@ -31550,8 +33728,13 @@
                 "name": {
                     "type": "string"
                 },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "use_sandbox_mode": {
-                    "description": "These fields are used to control the behaviour of the org.",
                     "type": "boolean"
                 }
             }
@@ -31560,6 +33743,17 @@
             "type": "object",
             "properties": {
                 "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.CreateRunnerBootstrapTokenResponse": {
+            "type": "object",
+            "properties": {
+                "expires_at": {
+                    "type": "string"
+                },
+                "token": {
                     "type": "string"
                 }
             }
@@ -31742,6 +33936,44 @@
                 }
             }
         },
+        "service.ExampleApp": {
+            "type": "object",
+            "properties": {
+                "branch": {
+                    "type": "string"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "cloud_provider": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "difficulty": {
+                    "type": "string"
+                },
+                "directory": {
+                    "type": "string"
+                },
+                "display_name": {
+                    "type": "string"
+                },
+                "repo": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "service.ForceShutdownRequest": {
             "type": "object"
         },
@@ -31768,6 +34000,132 @@
                     "type": "string"
                 },
                 "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.InstallAppPermissionsConfigResponse": {
+            "type": "object",
+            "properties": {
+                "break_glass_roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/service.InstallPermissionsRoleStatus"
+                    }
+                },
+                "custom_roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/service.InstallPermissionsRoleStatus"
+                    }
+                },
+                "deprovision_role": {
+                    "$ref": "#/definitions/service.InstallPermissionsRoleStatus"
+                },
+                "maintenance_role": {
+                    "$ref": "#/definitions/service.InstallPermissionsRoleStatus"
+                },
+                "provision_role": {
+                    "$ref": "#/definitions/service.InstallPermissionsRoleStatus"
+                }
+            }
+        },
+        "service.InstallGroupRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "install_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "max_parallel": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "order": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "requires_approval": {
+                    "type": "boolean"
+                },
+                "rollback_on_failure": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "service.InstallPermissionsRoleStatus": {
+            "type": "object",
+            "properties": {
+                "app_config_id": {
+                    "type": "string"
+                },
+                "arn": {
+                    "type": "string"
+                },
+                "cloud_platform": {
+                    "type": "string"
+                },
+                "cloudformation_param_name": {
+                    "type": "string"
+                },
+                "cloudformation_stack_name": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by_id": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "display_name": {
+                    "type": "string"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "enabled_in_stack": {
+                    "$ref": "#/definitions/sql.NullBool"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "org_id": {
+                    "type": "string"
+                },
+                "owner_id": {
+                    "type": "string"
+                },
+                "owner_type": {
+                    "type": "string"
+                },
+                "permissions_boundary": {
+                    "type": "string"
+                },
+                "policies": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/app.AppAWSIAMPolicyConfig"
+                    }
+                },
+                "type": {
+                    "$ref": "#/definitions/app.AWSIAMRoleType"
+                },
+                "updated_at": {
                     "type": "string"
                 }
             }
@@ -31803,6 +34161,9 @@
             }
         },
         "service.MngFetchTokenRequest": {
+            "type": "object"
+        },
+        "service.MngRestartRequest": {
             "type": "object"
         },
         "service.MngShutDownRequest": {
@@ -31887,25 +34248,6 @@
                 }
             }
         },
-        "service.PublicGitVCSSandboxConfigRequest": {
-            "type": "object",
-            "required": [
-                "branch",
-                "directory",
-                "repo"
-            ],
-            "properties": {
-                "branch": {
-                    "type": "string"
-                },
-                "directory": {
-                    "type": "string"
-                },
-                "repo": {
-                    "type": "string"
-                }
-            }
-        },
         "service.Readme": {
             "type": "object",
             "properties": {
@@ -31936,6 +34278,9 @@
             "properties": {
                 "plan_only": {
                     "type": "boolean"
+                },
+                "role": {
+                    "type": "string"
                 }
             }
         },
@@ -32056,11 +34401,36 @@
                 }
             }
         },
+        "service.TriggerAppBranchRunRequest": {
+            "type": "object",
+            "properties": {
+                "config_id": {
+                    "description": "optional - use latest if not provided",
+                    "type": "string"
+                },
+                "force": {
+                    "description": "force run even if no changes detected",
+                    "type": "boolean"
+                }
+            }
+        },
         "service.UpdateActionWorkflowRequest": {
             "type": "object",
             "properties": {
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "service.UpdateAppBranchRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1
                 }
             }
         },
@@ -32155,11 +34525,17 @@
                 "inputs"
             ],
             "properties": {
+                "deploy_dependents": {
+                    "type": "boolean"
+                },
                 "inputs": {
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
                     }
+                },
+                "role": {
+                    "type": "string"
                 }
             }
         },
@@ -32206,6 +34582,7 @@
             "type": "object",
             "properties": {
                 "aws_max_instance_lifetime": {
+                    "description": "Deprecated: no longer used. Instance refresh is handled by a backend cron.",
                     "type": "integer",
                     "maximum": 31536000,
                     "minimum": 86400
@@ -32367,6 +34744,35 @@
                 }
             }
         },
+        "signaldb.SignalData": {
+            "type": "object",
+            "properties": {
+                "signal": {}
+            }
+        },
+        "signaldb.WorkflowRef": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "namespace": {
+                    "type": "string"
+                }
+            }
+        },
+        "sql.NullBool": {
+            "type": "object",
+            "properties": {
+                "bool": {
+                    "type": "boolean"
+                },
+                "valid": {
+                    "description": "Valid is true if Bool is not NULL",
+                    "type": "boolean"
+                }
+            }
+        },
         "state.AWSCloudAccount": {
             "type": "object",
             "properties": {
@@ -32446,6 +34852,9 @@
                 },
                 "azure": {
                     "$ref": "#/definitions/state.AzureCloudAccount"
+                },
+                "gcp": {
+                    "$ref": "#/definitions/state.GCPCloudAccount"
                 }
             }
         },
@@ -32459,6 +34868,17 @@
                     "type": "boolean"
                 },
                 "public_domain": {
+                    "type": "string"
+                }
+            }
+        },
+        "state.GCPCloudAccount": {
+            "type": "object",
+            "properties": {
+                "project_id": {
+                    "type": "string"
+                },
+                "region": {
                     "type": "string"
                 }
             }
