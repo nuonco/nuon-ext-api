@@ -59,21 +59,79 @@ jobs:
             echo "Tag $TAG does not exist yet."
           fi
 
-      - name: Download latest spec
-        if: steps.check.outputs.exists == 'false' && steps.tag.outputs.exists == 'false'
-        run: curl -sS https://api.nuon.co/docs/doc.json -o spec/doc.json
-
-      - name: Ensure tag exists for release
-        if: steps.check.outputs.exists == 'false' && steps.tag.outputs.exists == 'false'
+      - name: Inspect tag/spec state
+        id: state
+        if: steps.check.outputs.exists == 'false'
         run: |
           TAG="${{ steps.version.outputs.tag }}"
+          EXPECTED="${{ steps.version.outputs.api_version }}"
+
+          if [ "${{ steps.tag.outputs.exists }}" = 'true' ]; then
+            TAGGED_SPEC_VERSION=$(git show "$TAG:spec/doc.json" 2>/dev/null | jq -r '.info.version // empty')
+
+            if [ -z "$TAGGED_SPEC_VERSION" ]; then
+              echo "repair=true" >> "$GITHUB_OUTPUT"
+              echo "Existing tag $TAG is missing spec/doc.json version metadata; preparing repair."
+            elif [ "$TAGGED_SPEC_VERSION" != "$EXPECTED" ]; then
+              echo "repair=true" >> "$GITHUB_OUTPUT"
+              echo "Existing tag $TAG has spec version $TAGGED_SPEC_VERSION, expected $EXPECTED; preparing repair."
+            else
+              echo "repair=false" >> "$GITHUB_OUTPUT"
+              echo "Existing tag $TAG already matches expected spec version $EXPECTED."
+            fi
+          else
+            echo "repair=true" >> "$GITHUB_OUTPUT"
+            echo "Tag $TAG does not exist; preparing initial tag creation."
+          fi
+
+      - name: Download latest spec
+        if: steps.check.outputs.exists == 'false' && steps.state.outputs.repair == 'true'
+        run: curl -sS https://api.nuon.co/docs/doc.json -o spec/doc.json
+
+      - name: Ensure tag points at expected spec
+        if: steps.check.outputs.exists == 'false' && steps.state.outputs.repair == 'true'
+        run: |
+          TAG="${{ steps.version.outputs.tag }}"
+          EXPECTED="${{ steps.version.outputs.api_version }}"
+          DOWNLOADED=$(jq -r '.info.version' spec/doc.json)
+
+          if [ "$DOWNLOADED" != "$EXPECTED" ]; then
+            echo "::error::Fetched spec/doc.json version $DOWNLOADED but expected API version $EXPECTED"
+            exit 1
+          fi
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add spec/doc.json
           git diff --cached --quiet || git commit -m "spec: update to ${TAG}"
-          git tag -a "$TAG" -m "Release ${TAG}"
-          git push origin "refs/tags/$TAG"
+
+          if [ "${{ steps.tag.outputs.exists }}" = 'true' ]; then
+            git tag -fa "$TAG" -m "Release ${TAG}"
+            git push --force origin "refs/tags/$TAG"
+          else
+            git tag -a "$TAG" -m "Release ${TAG}"
+            git push origin "refs/tags/$TAG"
+          fi
+
+      - name: Checkout tag commit
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          TAG="${{ steps.version.outputs.tag }}"
+          git checkout --detach "$TAG"
+
+      - name: Validate tag/spec version alignment
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          EXPECTED="${{ steps.version.outputs.api_version }}"
+          ACTUAL=$(jq -r '.info.version' spec/doc.json)
+
+          echo "Expected API version: $EXPECTED"
+          echo "Tagged spec version:  $ACTUAL"
+
+          if [ "$ACTUAL" != "$EXPECTED" ]; then
+            echo "::error::Tag/spec mismatch after tag reconciliation: expected $EXPECTED but spec/doc.json contains $ACTUAL"
+            exit 1
+          fi
 
       - name: Checkout tag commit
         if: steps.check.outputs.exists == 'false'
